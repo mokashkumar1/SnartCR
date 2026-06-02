@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-navy-950 text-white min-h-screen relative;
+    background-image: radial-gradient(circle at top, #1E293B 0%, #0F172A 40%, #0A0F1E 100%);
+    background-attachment: fixed;
+    overscroll-behavior-y: none;
+  }
+  #root {
+    @apply min-h-screen relative z-10;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-navy-900/60 backdrop-blur-xl border border-white/5 shadow-xl;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Toast customizations */
+[data-sonner-toast] {
+  @apply bg-navy-800 text-white border-navy-700 !important;
+}
