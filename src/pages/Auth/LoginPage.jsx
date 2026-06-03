@@ -1,28 +1,36 @@
 import { useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Inbox, ArrowLeft } from 'lucide-react'
 import Button from '../../components/ui/Button'
 import { showToast } from '../../components/ui/Toast'
 
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  const [signupSuccess, setSignupSuccess] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { signIn, signUp } = useAuthStore()
+  
+  const { signIn, signUp, resetPassword } = useAuthStore()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || (!isForgotPassword && !password.trim())) {
       showToast('Please fill all fields', 'error')
       return
     }
     setLoading(true)
     try {
-      if (isSignUp) {
+      if (isForgotPassword) {
+        await resetPassword(email.trim())
+        setResetSent(true)
+      } else if (isSignUp) {
         await signUp(email.trim(), password)
-        showToast('Account created! Please check your email to confirm.')
+        setSignupSuccess(true)
       } else {
         await signIn(email.trim(), password)
         showToast('Welcome back!')
@@ -35,69 +43,146 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none" />
-
+    <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden bg-[#0B1120]">
       <div className="relative z-10 w-full max-w-sm mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-md">CR Attendance</h1>
-          <p className="text-blue-200/80 text-sm">Built for Pakistani university CRs</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">CR Attendance</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Built for Pakistani university CRs</p>
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Email</label>
-              <div className="relative">
-                <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@university.edu.pk"
-                  className="w-full h-12 pl-11 pr-4 bg-navy-950/50 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all shadow-inner"
-                  required
-                />
+        <div className="bg-[#131B2F] border border-[#1E293B] shadow-lg rounded-2xl p-6">
+          {signupSuccess ? (
+            <div className="text-center py-6">
+              <div className="mx-auto w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <Inbox size={32} className="text-blue-400" />
               </div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Check your email</h2>
+              <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
+                We've sent a verification link to <br/><span className="text-slate-900 dark:text-white font-medium">{email}</span>. <br/>Please verify your email to continue.
+              </p>
+              <Button 
+                size="lg" 
+                className="w-full" 
+                onClick={() => {
+                  setSignupSuccess(false)
+                  setIsSignUp(false)
+                  setPassword('')
+                }}
+              >
+                Back to Sign In
+              </Button>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Password</label>
-              <div className="relative">
-                <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full h-12 pl-11 pr-11 bg-navy-950/50 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all shadow-inner"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1"
+          ) : resetSent ? (
+            <div className="text-center py-6">
+              <div className="mx-auto w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <Mail size={32} className="text-blue-400" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Reset link sent</h2>
+              <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
+                We've sent a password reset link to <br/><span className="text-slate-900 dark:text-white font-medium">{email}</span>.
+              </p>
+              <Button 
+                size="lg" 
+                className="w-full" 
+                onClick={() => {
+                  setResetSent(false)
+                  setIsForgotPassword(false)
+                  setPassword('')
+                }}
+              >
+                Back to Sign In
+              </Button>
+            </div>
+          ) : (
+            <>
+              {isForgotPassword && (
+                <button 
+                  onClick={() => setIsForgotPassword(false)}
+                  className="flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors mb-4"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  <ArrowLeft size={16} className="mr-1" /> Back
                 </button>
+              )}
+              
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {isForgotPassword ? 'Reset Password' : isSignUp ? 'Create Account' : 'Sign In'}
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  {isForgotPassword 
+                    ? 'Enter your email to receive a reset link' 
+                    : 'Enter your credentials to continue'}
+                </p>
               </div>
-            </div>
 
-            <Button type="submit" size="lg" className="w-full mt-4" disabled={loading}>
-              {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
-            </Button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-1">Email</label>
+                  <div className="relative">
+                    <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@university.edu.pk"
+                      className="w-full h-12 pl-11 pr-4 bg-[#0B1120] border border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                      required
+                    />
+                  </div>
+                </div>
 
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-blue-300 hover:text-blue-200 transition-colors"
-            >
-              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
-            </button>
-          </div>
+                {!isForgotPassword && (
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5 ml-1 mr-1">
+                      <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Password</label>
+                      {!isSignUp && (
+                        <button 
+                          type="button" 
+                          onClick={() => setIsForgotPassword(true)}
+                          className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full h-12 pl-11 pr-11 bg-[#0B1120] border border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-white transition-colors p-1"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <Button type="submit" size="lg" className="w-full mt-2" disabled={loading}>
+                  {loading ? 'Please wait...' : isForgotPassword ? 'Send Reset Link' : isSignUp ? 'Create Account' : 'Sign In'}
+                </Button>
+              </form>
+
+              {!isForgotPassword && (
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors"
+                  >
+                    {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

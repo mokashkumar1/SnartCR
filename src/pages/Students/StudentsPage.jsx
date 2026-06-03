@@ -39,7 +39,7 @@ export default function StudentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 pb-24">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-24">
       <PageHeader title="Students" showBack={false} />
 
       <div className="px-4 py-3 space-y-3">
@@ -50,7 +50,7 @@ export default function StudentsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by roll or name..."
-            className="w-full h-11 pl-10 pr-4 bg-navy-800 border border-navy-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full h-11 pl-10 pr-4 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
           />
         </div>
 
@@ -71,22 +71,22 @@ export default function StudentsPage() {
           filtered.map((student) => (
             <div
               key={student.id}
-              className="flex items-center justify-between p-3 bg-navy-800 border border-navy-700 rounded-xl"
+              className="flex items-center justify-between p-3 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl"
             >
               <div>
-                <div className="font-medium text-white">{student.roll_number}</div>
-                <div className="text-sm text-slate-400">{student.name}</div>
+                <div className="font-medium text-slate-900 dark:text-white">{student.roll_number}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{student.name}</div>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setEditing(student)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-navy-700 transition-colors"
+                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-400 hover:bg-navy-700 transition-colors"
                 >
                   <Pencil size={16} />
                 </button>
                 <button
                   onClick={() => handleDelete(student.id)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-navy-700 transition-colors"
+                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-400 hover:bg-navy-700 transition-colors"
                 >
                   <Trash2 size={16} />
                 </button>

@@ -7,11 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-blue-500 text-white hover:bg-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]',
-        success: 'bg-green-500 text-white hover:bg-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]',
-        danger: 'bg-red-500 text-white hover:bg-red-400 shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]',
-        outline: 'border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 backdrop-blur-sm',
-        ghost: 'bg-transparent text-slate-300 hover:bg-white/5 hover:text-white',
+        primary: 'bg-indigo-600 text-slate-900 dark:text-white hover:bg-indigo-700 shadow-sm shadow-indigo-500/20',
+        success: 'bg-green-500 text-slate-900 dark:text-white hover:bg-green-600 shadow-sm shadow-green-500/20',
+        danger: 'bg-red-500 text-slate-900 dark:text-white hover:bg-red-600 shadow-sm shadow-red-500/20',
+        outline: 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700',
+        ghost: 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
       },
       size: {
         sm: 'h-9 px-3 text-sm',

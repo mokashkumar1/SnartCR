@@ -26,21 +26,21 @@ export default function SubjectStatsPage() {
   const noData = stats.filter((s) => s.percentage === null)
 
   return (
-    <div className="min-h-screen bg-navy-900 pb-8">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-8">
       <PageHeader title="Subject Stats" backTo="/history" />
 
       <div className="px-4 py-4 space-y-6">
-        <div className="bg-navy-800 border border-navy-700 rounded-2xl p-4 flex items-center justify-around">
+        <div className="bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-4 flex items-center justify-around">
           <div className="text-center">
-            <div className="text-xl font-bold text-white">{subjectSessions.length}</div>
+            <div className="text-xl font-bold text-slate-900 dark:text-white">{subjectSessions.length}</div>
             <div className="text-xs text-slate-500">Sessions</div>
           </div>
-          <div className="w-px h-10 bg-navy-700" />
+          <div className="w-px h-10 bg-slate-100 dark:bg-[#1E293B]" />
           <div className="text-center">
             <div className="text-xl font-bold text-red-400">{belowThreshold.length}</div>
             <div className="text-xs text-slate-500">Below 75%</div>
           </div>
-          <div className="w-px h-10 bg-navy-700" />
+          <div className="w-px h-10 bg-slate-100 dark:bg-[#1E293B]" />
           <div className="text-center">
             <div className="text-xl font-bold text-green-400">{aboveThreshold.length}</div>
             <div className="text-xs text-slate-500">Above 75%</div>
@@ -57,8 +57,8 @@ export default function SubjectStatsPage() {
               {belowThreshold.map((s) => (
                 <div key={s.id} className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
                   <div>
-                    <div className="font-medium text-white">{s.roll_number}</div>
-                    <div className="text-sm text-slate-400">{s.name}</div>
+                    <div className="font-medium text-slate-900 dark:text-white">{s.roll_number}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{s.name}</div>
                   </div>
                   <Badge variant="danger">{formatAttendancePercent(s.percentage)}</Badge>
                 </div>
@@ -75,10 +75,10 @@ export default function SubjectStatsPage() {
             </div>
             <div className="space-y-2">
               {aboveThreshold.map((s) => (
-                <div key={s.id} className="flex items-center justify-between p-3 bg-navy-800 border border-navy-700 rounded-xl">
+                <div key={s.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl">
                   <div>
-                    <div className="font-medium text-white">{s.roll_number}</div>
-                    <div className="text-sm text-slate-400">{s.name}</div>
+                    <div className="font-medium text-slate-900 dark:text-white">{s.roll_number}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{s.name}</div>
                   </div>
                   <Badge variant="success">{formatAttendancePercent(s.percentage)}</Badge>
                 </div>
@@ -92,10 +92,10 @@ export default function SubjectStatsPage() {
             <h3 className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wider">No Data</h3>
             <div className="space-y-2">
               {noData.map((s) => (
-                <div key={s.id} className="flex items-center justify-between p-3 bg-navy-800 border border-navy-700 rounded-xl opacity-60">
+                <div key={s.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl opacity-60">
                   <div>
-                    <div className="font-medium text-white">{s.roll_number}</div>
-                    <div className="text-sm text-slate-400">{s.name}</div>
+                    <div className="font-medium text-slate-900 dark:text-white">{s.roll_number}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{s.name}</div>
                   </div>
                   <Badge variant="default">N/A</Badge>
                 </div>

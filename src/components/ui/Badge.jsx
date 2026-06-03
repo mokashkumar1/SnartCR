@@ -1,6 +1,6 @@
 export default function Badge({ children, variant = 'default' }) {
   const variants = {
-    default: 'bg-navy-700 text-slate-300',
+    default: 'bg-slate-100 dark:bg-[#1E293B] text-slate-600 dark:text-slate-300',
     success: 'bg-green-500/20 text-green-400',
     danger: 'bg-red-500/20 text-red-400',
     warning: 'bg-amber-500/20 text-amber-400',

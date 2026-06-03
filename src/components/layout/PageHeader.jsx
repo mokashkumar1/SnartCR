@@ -10,13 +10,13 @@ export default function PageHeader({ title, backTo, showBack = true }) {
         {showBack && (
           <button
             onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
-            className="p-2 -ml-2 rounded-xl active:scale-90 bg-white/5 hover:bg-white/10 transition-all text-slate-300 hover:text-white"
+            className="p-2 -ml-2 rounded-xl active:scale-90 bg-white/5 hover:bg-white/10 transition-all text-slate-600 dark:text-slate-300 hover:text-white"
             aria-label="Go back"
           >
             <ArrowLeft size={20} />
           </button>
         )}
-        <h1 className="text-lg font-medium text-white truncate drop-shadow-sm">{title}</h1>
+        <h1 className="text-lg font-medium text-slate-900 dark:text-white truncate drop-shadow-sm">{title}</h1>
       </div>
     </header>
   )

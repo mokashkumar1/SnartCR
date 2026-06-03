@@ -1,35 +1,164 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAttendanceStore } from '../../store/attendanceStore'
 import { useStudentsStore } from '../../store/studentsStore'
+import { useAuthStore } from '../../store/authStore'
 import PageHeader from '../../components/layout/PageHeader'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
-import { CheckCircle, XCircle, Trash2 } from 'lucide-react'
+import { CheckCircle, XCircle, Trash2, Share2, Copy, FileText, Image as ImageIcon, FileSpreadsheet } from 'lucide-react'
 import { showToast } from '../../components/ui/Toast'
 import { format } from 'date-fns'
+import { buildWhatsAppReport, shareReport } from '../../lib/shareUtils'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 export default function SessionDetailPage() {
   const { sessionId } = useParams()
   const navigate = useNavigate()
-  const { sessions, records, fetchSessions, fetchRecords, deleteSession } = useAttendanceStore()
-  const { students } = useStudentsStore()
+  const { sessions, records, subjects, fetchSessions, fetchRecords, fetchSubjects, deleteSession } = useAttendanceStore()
+  const { students, fetchStudents } = useStudentsStore()
+  const { profile } = useAuthStore()
+
+  const [shared, setShared] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const exportRef = useRef(null)
 
   useEffect(() => {
     fetchSessions()
     fetchRecords()
-  }, [fetchSessions, fetchRecords, sessionId])
+    fetchSubjects()
+    fetchStudents()
+  }, [fetchSessions, fetchRecords, fetchSubjects, fetchStudents, sessionId])
 
   const session = sessions.find((s) => s.id === sessionId)
   const sessionRecords = records.filter((r) => r.session_id === sessionId)
+  const subject = subjects.find((s) => s.id === session?.subject_id)
 
-  const present = sessionRecords.filter((r) => r.status === 'present')
-  const absent = sessionRecords.filter((r) => r.status === 'absent')
+  const presentRecords = sessionRecords.filter((r) => r.status === 'present')
+  const absentRecords = sessionRecords.filter((r) => r.status === 'absent')
+
+  const presentCount = presentRecords.length
+  const totalStudents = session?.total_students ?? students.length
 
   const getStudent = (id) => students.find((s) => s.id === id)
 
+  // Absentees for export
+  const absentees = absentRecords
+    .map((r) => getStudent(r.student_id))
+    .filter(Boolean)
+
+  const subjectName = subject?.name || 'Subject'
+  const classInfo = profile ? `${profile.batch}${profile.dept_code}-${profile.section}` : 'Class'
+
+  const reportText = buildWhatsAppReport({
+    classInfo,
+    subjectName,
+    date: session?.date || new Date(),
+    absentees,
+    totalStudents,
+    presentCount,
+    crName: profile?.cr_name || 'CR',
+  })
+
+  const handleShare = async () => {
+    const result = await shareReport(reportText)
+    if (result.success) {
+      setShared(true)
+      showToast(result.method === 'share' ? 'Shared!' : 'Copied to clipboard!')
+    } else if (!result.aborted) {
+      showToast('Could not share', 'error')
+    }
+  }
+
+  const handleExportCSV = () => {
+    let csv = `Subject,"${subjectName}"\n`
+    csv += `Date,"${format(new Date(session?.date || new Date()), 'EEEE, d MMMM yyyy')}"\n`
+    csv += `Class,"${classInfo}"\n\n`
+    csv += `Roll Number,Name,Status\n`
+    
+    sessionRecords.forEach(record => {
+      const student = getStudent(record.student_id)
+      if (student) {
+        csv += `"${student.roll_number}","${student.name}","${record.status}"\n`
+      }
+    })
+    
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Attendance_${subjectName.replace(/\s+/g, '_')}_${format(new Date(session?.date || new Date()), 'yyyy-MM-dd')}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    showToast('CSV downloaded!')
+  }
+
+  const handleExportImage = async () => {
+    if (!exportRef.current || isExporting) return
+    setIsExporting(true)
+    showToast('Generating Image...')
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready
+      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+
+      const canvas = await html2canvas(exportRef.current, { 
+        backgroundColor: '#ffffff', 
+        scale: 2, 
+        useCORS: true 
+      })
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `Attendance_${subjectName.replace(/\s+/g, '_')}_${format(new Date(session?.date || new Date()), 'yyyy-MM-dd')}.jpg`
+      a.click()
+      showToast('Image downloaded successfully!')
+    } catch (err) {
+      console.error(err)
+      showToast('Failed to save image', 'error')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExportPDF = async () => {
+    if (!exportRef.current || isExporting) return
+    setIsExporting(true)
+    showToast('Generating PDF...')
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready
+      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+
+      const pages = exportRef.current.querySelectorAll('.export-page')
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      
+      for (let i = 0; i < pages.length; i++) {
+        const pageEl = pages[i]
+        const canvas = await html2canvas(pageEl, { 
+          backgroundColor: '#ffffff',
+          scale: 2, 
+          useCORS: true 
+        })
+        const imgData = canvas.toDataURL('image/jpeg', 0.8)
+        
+        if (i > 0) pdf.addPage()
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297)
+      }
+      
+      pdf.save(`Attendance_${subjectName.replace(/\s+/g, '_')}_${format(new Date(session?.date || new Date()), 'yyyy-MM-dd')}.pdf`)
+      showToast('PDF downloaded successfully!')
+    } catch (err) {
+      console.error(err)
+      showToast('Failed to save PDF', 'error')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   const handleDelete = async () => {
-    if (!confirm('Delete this session permanently?')) return
+    if (!window.confirm('Delete this session permanently?')) return
     try {
       await deleteSession(sessionId)
       showToast('Session deleted')
@@ -41,42 +170,76 @@ export default function SessionDetailPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-navy-900 flex items-center justify-center text-slate-400">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center text-slate-500 dark:text-slate-400">
         Loading...
       </div>
     )
   }
 
+  // Calculate chunks for A4 pagination
+  const ABSENTEES_PER_PAGE = 39 // 13 rows * 3 columns
+  const absenteeChunks = []
+  if (absentees.length === 0) {
+    absenteeChunks.push([])
+  } else {
+    for (let i = 0; i < absentees.length; i += ABSENTEES_PER_PAGE) {
+      absenteeChunks.push(absentees.slice(i, i + ABSENTEES_PER_PAGE))
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-navy-900 pb-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-8 overflow-x-hidden transition-colors duration-200">
       <PageHeader title="Session Report" backTo="/history" />
 
       <div className="px-4 py-6 space-y-6">
-        <div className="bg-navy-800 border border-navy-700 rounded-2xl p-5">
-          <div className="text-sm text-slate-400 mb-1">Date</div>
-          <div className="text-lg font-medium text-white">
+        <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-5 shadow-sm dark:shadow-lg">
+          <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Date</div>
+          <div className="text-lg font-medium text-slate-900 dark:text-white">
             {format(new Date(session.date), 'EEEE, d MMMM yyyy')}
           </div>
+          <div className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-2">
+            Subject: <span className="text-slate-900 dark:text-white">{subjectName}</span>
+          </div>
           <div className="mt-4 flex items-center gap-3">
-            <Badge variant="success">{present.length} Present</Badge>
-            <Badge variant="danger">{absent.length} Absent</Badge>
+            <Badge variant="success">{presentRecords.length} Present</Badge>
+            <Badge variant="danger">{absentRecords.length} Absent</Badge>
           </div>
         </div>
 
-        {absent.length > 0 && (
+        {/* Export Options */}
+        <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-4 shadow-sm dark:shadow-lg">
+          <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Export Report</h3>
+          <div className="grid grid-cols-2 gap-3 mb-1">
+            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportImage}>
+              <ImageIcon size={16} /> Save Image
+            </Button>
+            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportPDF}>
+              <FileText size={16} /> Save PDF
+            </Button>
+            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportCSV}>
+              <FileSpreadsheet size={16} /> Save CSV
+            </Button>
+            <Button className="w-full flex items-center justify-center gap-2" onClick={handleShare}>
+              {shared ? <Copy size={16} /> : <Share2 size={16} />}
+              {shared ? 'Copied' : 'Copy Text'}
+            </Button>
+          </div>
+        </div>
+
+        {absentRecords.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-slate-400 mb-3 uppercase tracking-wider">Absent</h3>
+            <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Absent</h3>
             <div className="space-y-2">
-              {absent.map((r) => {
+              {absentRecords.map((r) => {
                 const s = getStudent(r.student_id)
                 if (!s) return null
                 return (
                   <div key={r.id} className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-                    <div>
-                      <div className="font-medium text-white">{s.roll_number}</div>
-                      <div className="text-sm text-slate-400">{s.name}</div>
+                    <div className="flex-1 pr-2">
+                      <div className="font-medium text-slate-900 dark:text-white mb-0.5">{s.roll_number}</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400 pb-0.5">{s.name}</div>
                     </div>
-                    <XCircle size={18} className="text-red-400" />
+                    <XCircle size={18} className="text-red-500 dark:text-red-400 shrink-0" />
                   </div>
                 )
               })}
@@ -84,20 +247,20 @@ export default function SessionDetailPage() {
           </div>
         )}
 
-        {present.length > 0 && (
+        {presentRecords.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-slate-400 mb-3 uppercase tracking-wider">Present</h3>
+            <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Present</h3>
             <div className="space-y-2">
-              {present.map((r) => {
+              {presentRecords.map((r) => {
                 const s = getStudent(r.student_id)
                 if (!s) return null
                 return (
                   <div key={r.id} className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
-                    <div>
-                      <div className="font-medium text-white">{s.roll_number}</div>
-                      <div className="text-sm text-slate-400">{s.name}</div>
+                    <div className="flex-1 pr-2">
+                      <div className="font-medium text-slate-900 dark:text-white mb-0.5">{s.roll_number}</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400 pb-0.5">{s.name}</div>
                     </div>
-                    <CheckCircle size={18} className="text-green-400" />
+                    <CheckCircle size={18} className="text-green-500 dark:text-green-400 shrink-0" />
                   </div>
                 )
               })}
@@ -105,9 +268,76 @@ export default function SessionDetailPage() {
           </div>
         )}
 
-        <Button variant="danger" className="w-full" onClick={handleDelete}>
-          <Trash2 size={18} className="mr-2" /> Delete Session
-        </Button>
+        <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+          <Button variant="danger" className="w-full" onClick={handleDelete}>
+            <Trash2 size={18} className="mr-2" /> Delete Session
+          </Button>
+        </div>
+      </div>
+
+      {/* Hidden Off-Screen A4 Export Layout */}
+      <div className="absolute top-[-9999px] left-[-9999px] opacity-0 pointer-events-none" aria-hidden="true">
+        <div ref={exportRef} className="flex flex-col gap-4 bg-slate-100 p-8">
+          {absenteeChunks.map((chunk, index) => (
+            <div
+              key={index}
+              className="export-page bg-white w-[794px] h-[1123px] p-12 box-border relative flex flex-col shadow-none border-0"
+            >
+              {/* Header */}
+              <div className="text-center border-b border-slate-200 pb-6 mb-6">
+                <h2 className="text-3xl font-bold text-slate-900 mb-2">{subjectName}</h2>
+                <p className="text-lg text-slate-600 font-medium">
+                  {format(new Date(session.date), 'EEEE, d MMMM yyyy')} • {classInfo}
+                </p>
+                <div className="mt-6 flex items-center justify-center gap-16">
+                  <div className="flex flex-col items-center">
+                    <div className="text-4xl font-bold text-green-600">{presentCount}</div>
+                    <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mt-1">Present</div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-4xl font-bold text-red-600">{absentees.length}</div>
+                    <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mt-1">Absent</div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-4xl font-bold text-slate-900">
+                      {totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(1) : 0}%
+                    </div>
+                    <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mt-1">Rate</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Absentees Grid */}
+              <h3 className="text-xl font-bold text-slate-800 mb-5 border-l-4 border-red-500 pl-3">
+                Absent Students ({absentees.length}) {absenteeChunks.length > 1 ? `- Page ${index + 1}` : ''}
+              </h3>
+              
+              {chunk.length === 0 ? (
+                <div className="flex items-center gap-3 text-green-600 bg-green-50 p-6 rounded-xl border border-green-200">
+                  <CheckCircle size={24} />
+                  <span className="text-lg font-medium">All students were present!</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-x-4 gap-y-3 flex-1 content-start">
+                  {chunk.map((s) => (
+                    <div key={s.id} className="flex items-center justify-between p-3 bg-red-50/50 border border-red-100 rounded-lg">
+                      <div className="flex-1 pr-2">
+                        <div className="font-bold text-slate-900 text-[15px] mb-1">{s.roll_number}</div>
+                        <div className="text-sm text-slate-600 font-medium pb-0.5">{s.name}</div>
+                      </div>
+                      <XCircle size={18} className="text-red-500 shrink-0" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Footer Page Number */}
+              <div className="absolute bottom-10 left-0 right-0 text-center text-sm font-bold text-slate-400">
+                Page {index + 1} of {absenteeChunks.length}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

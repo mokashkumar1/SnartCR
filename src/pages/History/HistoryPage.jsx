@@ -27,7 +27,7 @@ export default function HistoryPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-navy-900 pb-20">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-20">
       <PageHeader title="History" showBack={false} />
 
       <div className="px-4 mt-2 space-y-6">
@@ -38,7 +38,7 @@ export default function HistoryPage() {
             subj.sessions.length > 0 ? (
               <div key={subj.id}>
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">{subj.name}</h2>
+                  <h2 className="text-sm font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">{subj.name}</h2>
                   <button
                     onClick={() => navigate(`/stats/${subj.id}`)}
                     className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
@@ -51,14 +51,14 @@ export default function HistoryPage() {
                     <button
                       key={session.id}
                       onClick={() => navigate(`/history/${session.id}`)}
-                      className="w-full flex items-center justify-between p-3 bg-navy-800 border border-navy-700 rounded-xl active:bg-navy-700 transition-colors text-left"
+                      className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl active:bg-navy-700 transition-colors text-left"
                     >
                       <div className="flex items-center gap-3">
                         <div className="bg-blue-500/10 p-2 rounded-lg">
                           <Calendar size={18} className="text-blue-400" />
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-white">
+                          <div className="text-sm font-medium text-slate-900 dark:text-white">
                             {format(new Date(session.date), 'EEEE, d MMMM yyyy')}
                           </div>
                           <div className="text-xs text-slate-500">

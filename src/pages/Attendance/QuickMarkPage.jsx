@@ -69,11 +69,11 @@ export default function QuickMarkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 pb-24">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-24">
       <PageHeader title="Quick Mark" backTo="/" />
 
-      <div className="px-4 py-3 flex items-center justify-between bg-navy-800/50 border-b border-navy-700">
-        <div className="text-sm text-slate-400">
+      <div className="px-4 py-3 flex items-center justify-between bg-slate-50 dark:bg-[#131B2F]/50 border-b border-slate-200 dark:border-[#1E293B]">
+        <div className="text-sm text-slate-500 dark:text-slate-400">
           Present: <span className="text-green-400 font-medium">{presentCount}</span> · Absent:{' '}
           <span className="text-red-400 font-medium">{absentCount}</span>
         </div>
@@ -93,16 +93,16 @@ export default function QuickMarkPage() {
               className={`w-full flex items-center justify-between p-3 rounded-xl border transition-colors text-left ${
                 isAbsent
                   ? 'bg-red-500/10 border-red-500/30'
-                  : 'bg-navy-800 border-navy-700'
+                  : 'bg-slate-50 dark:bg-[#131B2F] border-slate-200 dark:border-[#1E293B]'
               }`}
             >
               <div>
-                <div className="font-medium text-white">{student.roll_number}</div>
-                <div className="text-sm text-slate-400">{student.name}</div>
+                <div className="font-medium text-slate-900 dark:text-white">{student.roll_number}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{student.name}</div>
               </div>
               <div
                 className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                  isAbsent ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                  isAbsent ? 'bg-red-500 text-slate-900 dark:text-white' : 'bg-green-500 text-slate-900 dark:text-white'
                 }`}
               >
                 {isAbsent ? <X size={18} /> : <Check size={18} />}
@@ -112,7 +112,7 @@ export default function QuickMarkPage() {
         })}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-navy-900/95 backdrop-blur border-t border-navy-700 z-50">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0B1120]/95 backdrop-blur border-t border-slate-200 dark:border-[#1E293B] z-50">
         <Button size="lg" className="w-full" onClick={handleDone} disabled={loading}>
           {loading ? 'Saving...' : 'Done'}
         </Button>

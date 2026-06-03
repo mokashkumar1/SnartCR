@@ -66,6 +66,20 @@ export const useAuthStore = create((set, get) => ({
     set({ session: null, user: null, profile: null })
   },
 
+  resetPassword: async (email) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    if (error) throw error
+    return data
+  },
+
+  updatePassword: async (newPassword) => {
+    const { data, error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) throw error
+    return data
+  },
+
   createProfile: async (profileData) => {
     const userId = get().user?.id
     if (!userId) throw new Error('Not authenticated')

@@ -7,9 +7,7 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-navy-950 text-white min-h-screen relative;
-    background-image: radial-gradient(circle at top, #1E293B 0%, #0F172A 40%, #0A0F1E 100%);
-    background-attachment: fixed;
+    @apply bg-slate-50 text-slate-900 dark:bg-[#0B1120] dark:text-white min-h-screen relative transition-colors duration-200;
     overscroll-behavior-y: none;
   }
   #root {
@@ -19,7 +17,7 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-navy-900/60 backdrop-blur-xl border border-white/5 shadow-xl;
+    @apply bg-white border border-slate-200 shadow-sm dark:bg-[#131B2F] dark:border-[#1E293B] dark:shadow-lg;
   }
 }
 

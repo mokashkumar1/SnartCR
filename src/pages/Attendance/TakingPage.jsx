@@ -155,19 +155,19 @@ export default function TakingPage() {
 
   if (!initDone) {
     return (
-      <div className="min-h-screen bg-navy-950 flex items-center justify-center">
-        <div className="text-slate-400">Loading...</div>
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center">
+        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
       </div>
     )
   }
 
   if (!currentStudent) {
     return (
-      <div className="min-h-screen bg-navy-950 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex flex-col items-center justify-center px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-navy-950 to-navy-950" />
         <div className="text-center relative z-10 glass-panel p-8 rounded-3xl">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }} className="text-6xl mb-4">🎉</motion.div>
-          <h2 className="text-2xl font-bold text-white mb-2">All Done!</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">All Done!</h2>
           <p className="text-blue-200 mb-8">{markedCount}/{students.length} students marked</p>
           <Button size="lg" className="w-full max-w-xs" onClick={finishSession} disabled={loading}>
             {loading ? 'Saving...' : 'Finish & View Report'}
@@ -178,7 +178,7 @@ export default function TakingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-950 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex flex-col relative overflow-hidden">
       {/* Dynamic Background Overlays */}
       <motion.div style={{ opacity: bgPresentOpacity }} className="absolute inset-0 bg-green-500 pointer-events-none" />
       <motion.div style={{ opacity: bgAbsentOpacity }} className="absolute inset-0 bg-red-500 pointer-events-none" />
@@ -198,7 +198,7 @@ export default function TakingPage() {
             animate={controls}
             className="mt-12 mb-12 text-center glass-panel p-8 rounded-3xl cursor-grab active:cursor-grabbing touch-none"
           >
-            <div className="text-6xl font-bold tracking-wider text-white mb-3 drop-shadow-lg">
+            <div className="text-6xl font-bold tracking-wider text-slate-900 dark:text-white mb-3 drop-shadow-lg">
               {currentStudent.roll_number}
             </div>
             <div className="text-xl text-blue-200 font-medium">
@@ -208,14 +208,6 @@ export default function TakingPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <Button
-              variant="success"
-              size="giant"
-              onClick={() => mark('present')}
-              className="rounded-2xl shadow-lg"
-            >
-              <Check size={28} className="mr-2" /> PRESENT
-            </Button>
-            <Button
               variant="danger"
               size="giant"
               onClick={() => mark('absent')}
@@ -223,13 +215,21 @@ export default function TakingPage() {
             >
               <X size={28} className="mr-2" /> ABSENT
             </Button>
+            <Button
+              variant="success"
+              size="giant"
+              onClick={() => mark('present')}
+              className="rounded-2xl shadow-lg"
+            >
+              <Check size={28} className="mr-2" /> PRESENT
+            </Button>
           </div>
 
           <div className="h-12 mt-6 flex justify-center items-center">
             {index > 0 && (
               <button
                 onClick={goBack}
-                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5"
+                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5"
               >
                 <Undo size={16} /> Back to previous
               </button>
