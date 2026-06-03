@@ -48,10 +48,14 @@ export default function LoginPage() {
     <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden bg-surface-bg">
       <div className="relative z-10 w-full max-w-sm mx-auto">
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="w-full bg-[#0B1120] rounded-xl overflow-hidden shadow-lg border border-border mb-4">
-            <img src={logo} alt="SmartCR Logo" className="w-full h-auto object-cover opacity-95" />
-          </div>
-          <p className="text-dark-60 text-sm font-medium">Built for Pakistani university CRs</p>
+          <img 
+            src={logo} 
+            alt="SmartCR Logo" 
+            className="w-full max-w-[240px] h-auto object-contain mix-blend-lighten opacity-95 mb-1" 
+          />
+          <p className="text-primary-light text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">
+            Built for Pakistani University CRs
+          </p>
         </div>
 
         <div className="bg-surface-card border border-border shadow-card rounded-lg p-6">
