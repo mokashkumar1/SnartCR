@@ -84,31 +84,42 @@ export default function TakingPage() {
   const currentStudent = students[index]
   const markedCount = Object.keys(statusMap).length
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!currentStudent || loading) return
+      if (e.key === 'ArrowRight') mark('present')
+      if (e.key === 'ArrowLeft') mark('absent')
+      if (e.key === 'Backspace') goBack()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [index, currentStudent, session, loading])
+
   const mark = async (status) => {
     if (!session || !currentStudent) return
     const studentId = currentStudent.id
 
-    // Animate out based on status
+    // Animate out extremely fast
     await controls.start({
       x: status === 'present' ? 300 : -300,
       opacity: 0,
-      transition: { duration: 0.2 }
+      transition: { duration: 0.15 }
     })
 
     setStatusMap((prev) => ({ ...prev, [studentId]: status }))
 
-    try {
-      await markAttendance(session.id, studentId, status)
-    } catch (err) {
-      showToast('Failed to save. Will retry.', 'error')
-    }
+    // FIRE AND FORGET: Do not await the network call so UI moves instantly
+    markAttendance(session.id, studentId, status).catch(() => {
+      showToast('Failed to save. Check connection.', 'error')
+    })
 
     if (index < students.length - 1) {
       setIndex((i) => i + 1)
-      // Reset position for next student
+      // Reset position for next student instantly
       x.set(0)
-      controls.set({ x: 0, opacity: 1, scale: 0.9 })
-      controls.start({ scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } })
+      controls.set({ x: 0, opacity: 1, scale: 0.95 })
+      controls.start({ scale: 1, transition: { type: 'spring', stiffness: 400, damping: 25 } })
     } else {
       finishSession()
     }
@@ -124,8 +135,8 @@ export default function TakingPage() {
         return next
       })
       x.set(0)
-      controls.set({ x: 0, opacity: 0, scale: 0.9 })
-      controls.start({ opacity: 1, scale: 1, transition: { type: 'spring' } })
+      controls.set({ x: 0, opacity: 0, scale: 0.95 })
+      controls.start({ opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 400, damping: 25 } })
     }
   }
 
