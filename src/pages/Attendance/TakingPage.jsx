@@ -35,7 +35,7 @@ export default function TakingPage() {
   const controls = useAnimation()
   const rotate = useTransform(x, [-200, 200], [-10, 10])
   const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5])
-  
+
   // Background color hints
   const bgPresentOpacity = useTransform(x, [0, 150], [0, 0.2])
   const bgAbsentOpacity = useTransform(x, [-150, 0], [0.2, 0])
@@ -84,42 +84,31 @@ export default function TakingPage() {
   const currentStudent = students[index]
   const markedCount = Object.keys(statusMap).length
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!currentStudent || loading) return
-      if (e.key === 'ArrowRight') mark('present')
-      if (e.key === 'ArrowLeft') mark('absent')
-      if (e.key === 'Backspace') goBack()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [index, currentStudent, session, loading])
-
   const mark = async (status) => {
     if (!session || !currentStudent) return
     const studentId = currentStudent.id
 
-    // Animate out extremely fast
+    // Animate out based on status
     await controls.start({
       x: status === 'present' ? 300 : -300,
       opacity: 0,
-      transition: { duration: 0.15 }
+      transition: { duration: 0.2 }
     })
 
     setStatusMap((prev) => ({ ...prev, [studentId]: status }))
 
-    // FIRE AND FORGET: Do not await the network call so UI moves instantly
-    markAttendance(session.id, studentId, status).catch(() => {
-      showToast('Failed to save. Check connection.', 'error')
-    })
+    try {
+      await markAttendance(session.id, studentId, status)
+    } catch (err) {
+      showToast('Failed to save. Will retry.', 'error')
+    }
 
     if (index < students.length - 1) {
       setIndex((i) => i + 1)
-      // Reset position for next student instantly
+      // Reset position for next student
       x.set(0)
-      controls.set({ x: 0, opacity: 1, scale: 0.95 })
-      controls.start({ scale: 1, transition: { type: 'spring', stiffness: 400, damping: 25 } })
+      controls.set({ x: 0, opacity: 1, scale: 0.9 })
+      controls.start({ scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } })
     } else {
       finishSession()
     }
@@ -135,8 +124,8 @@ export default function TakingPage() {
         return next
       })
       x.set(0)
-      controls.set({ x: 0, opacity: 0, scale: 0.95 })
-      controls.start({ opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 400, damping: 25 } })
+      controls.set({ x: 0, opacity: 0, scale: 0.9 })
+      controls.start({ opacity: 1, scale: 1, transition: { type: 'spring' } })
     }
   }
 
@@ -192,7 +181,7 @@ export default function TakingPage() {
       {/* Dynamic Background Overlays */}
       <motion.div style={{ opacity: bgPresentOpacity }} className="absolute inset-0 bg-status-success pointer-events-none" />
       <motion.div style={{ opacity: bgAbsentOpacity }} className="absolute inset-0 bg-status-error pointer-events-none" />
-      
+
       <PageHeader title="Taking Attendance" backTo="/" />
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
