@@ -1,8 +1,8 @@
-# Attendy - Smart Attendance Management System 🎓
+# SmartCR - Smart Attendance Management System 🎓
 
-![Attendy Banner](https://via.placeholder.com/1200x400/0B1120/818CF8?text=Attendy+-+Attendance+Management+System)
+![SmartCR Banner](https://via.placeholder.com/1200x400/0B1120/818CF8?text=SmartCR+-+Attendance+Management+System)
 
-**Attendy** is a modern, full-stack Attendance Management application designed specifically for Class Representatives (CRs) and educators. Built with React, Tailwind CSS, and Supabase, it streamlines the tedious process of taking attendance, managing student records, and generating professional reports.
+**SmartCR** is a modern, full-stack Attendance Management application designed specifically for Class Representatives (CRs) and educators. Built with React, Tailwind CSS, and Supabase, it streamlines the tedious process of taking attendance, managing student records, and generating professional reports.
 
 ## ✨ Features
 
@@ -34,7 +34,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/attendy.git
+   git clone https://github.com/mokashkumar1/attendy.git
    cd attendy
    ```
 
