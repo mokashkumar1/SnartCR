@@ -51,9 +51,9 @@ export default function LoginPage() {
           <img 
             src={logo} 
             alt="SmartCR Logo" 
-            className="w-full max-w-[240px] h-auto object-contain mix-blend-lighten opacity-95 mb-1" 
+            className="w-full max-w-[240px] h-auto object-contain rounded-[1.25rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] mb-2" 
           />
-          <p className="text-primary-light text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">
+          <p className="text-[#818CF8] text-[10px] font-bold tracking-[0.2em] uppercase opacity-90">
             Built for Pakistani University CRs
           </p>
         </div>
