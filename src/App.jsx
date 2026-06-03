@@ -14,6 +14,7 @@ import StudentsPage from './pages/Students/StudentsPage'
 import HistoryPage from './pages/History/HistoryPage'
 import SessionDetailPage from './pages/History/SessionDetailPage'
 import SubjectStatsPage from './pages/History/SubjectStatsPage'
+import LowAttendancePage from './pages/History/LowAttendancePage'
 import SettingsPage from './pages/Settings/SettingsPage'
 
 import HomePage from './pages/Home/HomePage'
@@ -78,6 +79,7 @@ function App() {
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/history/:sessionId" element={<SessionDetailPage />} />
         <Route path="/stats/:subjectId" element={<SubjectStatsPage />} />
+        <Route path="/low-attendance" element={<LowAttendancePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

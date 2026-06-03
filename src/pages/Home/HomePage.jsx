@@ -156,22 +156,10 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* Reports */}
-            <Link to="/history" className="flex items-center p-4 bg-white dark:bg-[#111827] rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
-              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mr-4">
-                <FileText size={22} className="text-slate-700 dark:text-slate-300" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-[15px] font-bold text-slate-900 dark:text-white">Reports</h3>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Generate and share reports</p>
-              </div>
-              <div className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
-              </div>
-            </Link>
+
 
             {/* Low Attendance */}
-            <Link to="/students" className="flex items-center p-4 bg-white dark:bg-[#111827] rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
+            <Link to="/low-attendance" className="flex items-center p-4 bg-white dark:bg-[#111827] rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
               <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mr-4">
                 <AlertTriangle size={22} className="text-slate-700 dark:text-slate-300" />
               </div>
