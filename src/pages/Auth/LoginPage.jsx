@@ -4,6 +4,8 @@ import { Mail, Lock, Eye, EyeOff, Inbox, ArrowLeft } from 'lucide-react'
 import Button from '../../components/ui/Button'
 import { showToast } from '../../components/ui/Toast'
 
+import logo from '../../assets/smartcrlogo.png'
+
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
@@ -45,9 +47,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden bg-surface-bg">
       <div className="relative z-10 w-full max-w-sm mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-dark mb-2">CR Attendance</h1>
-          <p className="text-dark-60 text-sm">Built for Pakistani university CRs</p>
+        <div className="mb-8 flex flex-col items-center text-center">
+          <div className="w-full bg-[#0B1120] rounded-xl overflow-hidden shadow-lg border border-border mb-4">
+            <img src={logo} alt="SmartCR Logo" className="w-full h-auto object-cover opacity-95" />
+          </div>
+          <p className="text-dark-60 text-sm font-medium">Built for Pakistani university CRs</p>
         </div>
 
         <div className="bg-surface-card border border-border shadow-card rounded-lg p-6">
