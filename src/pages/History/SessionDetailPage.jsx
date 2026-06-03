@@ -170,7 +170,7 @@ export default function SessionDetailPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center text-slate-500 dark:text-slate-400">
+      <div className="min-h-screen bg-surface-bg flex items-center justify-center text-dark-60">
         Loading...
       </div>
     )
@@ -188,17 +188,17 @@ export default function SessionDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-8 overflow-x-hidden transition-colors duration-200">
+    <div className="min-h-screen bg-surface-bg pb-8 overflow-x-hidden transition-colors duration-200">
       <PageHeader title="Session Report" backTo="/history" />
 
       <div className="px-4 py-6 space-y-6">
-        <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-5 shadow-sm dark:shadow-lg">
-          <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Date</div>
-          <div className="text-lg font-medium text-slate-900 dark:text-white">
+        <div className="bg-surface-card border border-border rounded-lg p-5 shadow-card">
+          <div className="text-sm font-semibold text-dark-60 mb-1">Date</div>
+          <div className="text-lg font-bold text-dark">
             {format(new Date(session.date), 'EEEE, d MMMM yyyy')}
           </div>
-          <div className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-2">
-            Subject: <span className="text-slate-900 dark:text-white">{subjectName}</span>
+          <div className="text-sm font-semibold text-dark-60 mt-2">
+            Subject: <span className="text-dark">{subjectName}</span>
           </div>
           <div className="mt-4 flex items-center gap-3">
             <Badge variant="success">{presentRecords.length} Present</Badge>
@@ -207,19 +207,19 @@ export default function SessionDetailPage() {
         </div>
 
         {/* Export Options */}
-        <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-4 shadow-sm dark:shadow-lg">
-          <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Export Report</h3>
+        <div className="bg-surface-card border border-border rounded-lg p-5 shadow-card">
+          <h3 className="text-sm font-semibold text-dark-60 mb-3 uppercase tracking-wider">Export Report</h3>
           <div className="grid grid-cols-2 gap-3 mb-1">
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportImage}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportImage}>
               <ImageIcon size={16} /> Save Image
             </Button>
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportPDF}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportPDF}>
               <FileText size={16} /> Save PDF
             </Button>
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportCSV}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportCSV}>
               <FileSpreadsheet size={16} /> Save CSV
             </Button>
-            <Button className="w-full flex items-center justify-center gap-2" onClick={handleShare}>
+            <Button className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleShare}>
               {shared ? <Copy size={16} /> : <Share2 size={16} />}
               {shared ? 'Copied' : 'Copy Text'}
             </Button>
@@ -228,18 +228,18 @@ export default function SessionDetailPage() {
 
         {absentRecords.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Absent</h3>
+            <h3 className="text-sm font-semibold text-dark-60 mb-3 uppercase tracking-wider">Absent</h3>
             <div className="space-y-2">
               {absentRecords.map((r) => {
                 const s = getStudent(r.student_id)
                 if (!s) return null
                 return (
-                  <div key={r.id} className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                  <div key={r.id} className="flex items-center justify-between p-3 bg-status-error-light border border-status-error/20 rounded-md shadow-sm">
                     <div className="flex-1 pr-2">
-                      <div className="font-medium text-slate-900 dark:text-white mb-0.5">{s.roll_number}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400 pb-0.5">{s.name}</div>
+                      <div className="font-bold text-dark mb-0.5">{s.roll_number}</div>
+                      <div className="text-sm font-medium text-dark-60 pb-0.5">{s.name}</div>
                     </div>
-                    <XCircle size={18} className="text-red-500 dark:text-red-400 shrink-0" />
+                    <XCircle size={18} className="text-status-error shrink-0" />
                   </div>
                 )
               })}
@@ -249,18 +249,18 @@ export default function SessionDetailPage() {
 
         {presentRecords.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">Present</h3>
+            <h3 className="text-sm font-semibold text-dark-60 mb-3 uppercase tracking-wider">Present</h3>
             <div className="space-y-2">
               {presentRecords.map((r) => {
                 const s = getStudent(r.student_id)
                 if (!s) return null
                 return (
-                  <div key={r.id} className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
+                  <div key={r.id} className="flex items-center justify-between p-3 bg-status-success-light border border-status-success/20 rounded-md shadow-sm">
                     <div className="flex-1 pr-2">
-                      <div className="font-medium text-slate-900 dark:text-white mb-0.5">{s.roll_number}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400 pb-0.5">{s.name}</div>
+                      <div className="font-bold text-dark mb-0.5">{s.roll_number}</div>
+                      <div className="text-sm font-medium text-dark-60 pb-0.5">{s.name}</div>
                     </div>
-                    <CheckCircle size={18} className="text-green-500 dark:text-green-400 shrink-0" />
+                    <CheckCircle size={18} className="text-status-success shrink-0" />
                   </div>
                 )
               })}
@@ -268,7 +268,7 @@ export default function SessionDetailPage() {
           </div>
         )}
 
-        <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+        <div className="pt-6 border-t border-border">
           <Button variant="danger" className="w-full" onClick={handleDelete}>
             <Trash2 size={18} className="mr-2" /> Delete Session
           </Button>

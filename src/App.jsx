@@ -37,8 +37,8 @@ function App() {
 
   if (!initialized) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center transition-colors duration-200">
-        <div className="animate-pulse text-slate-400">Loading...</div>
+      <div className="min-h-screen bg-surface-bg flex items-center justify-center transition-colors duration-200">
+        <div className="animate-pulse text-dark-60">Loading...</div>
       </div>
     )
   }
@@ -67,7 +67,7 @@ function App() {
 
   // Fully authenticated
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-20 transition-colors duration-200">
+    <div className="min-h-screen bg-surface-bg pb-20 transition-colors duration-200">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />

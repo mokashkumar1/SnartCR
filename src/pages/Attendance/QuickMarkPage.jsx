@@ -69,13 +69,13 @@ export default function QuickMarkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-24">
+    <div className="min-h-screen bg-surface-bg pb-24">
       <PageHeader title="Quick Mark" backTo="/" />
 
-      <div className="px-4 py-3 flex items-center justify-between bg-slate-50 dark:bg-[#131B2F]/50 border-b border-slate-200 dark:border-[#1E293B]">
-        <div className="text-sm text-slate-500 dark:text-slate-400">
-          Present: <span className="text-green-400 font-medium">{presentCount}</span> · Absent:{' '}
-          <span className="text-red-400 font-medium">{absentCount}</span>
+      <div className="px-4 py-3 flex items-center justify-between bg-surface-card border-b border-border shadow-sm">
+        <div className="text-sm text-dark-60">
+          Present: <span className="text-status-success font-medium">{presentCount}</span> · Absent:{' '}
+          <span className="text-status-error font-medium">{absentCount}</span>
         </div>
         <Badge variant={absentCount > 0 ? 'warning' : 'success'}>
           {absentCount > 0 ? `${absentCount} absent` : 'All present'}
@@ -90,19 +90,19 @@ export default function QuickMarkPage() {
             <button
               key={student.id}
               onClick={() => toggle(student.id)}
-              className={`w-full flex items-center justify-between p-3 rounded-xl border transition-colors text-left ${
+              className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors text-left shadow-sm ${
                 isAbsent
-                  ? 'bg-red-500/10 border-red-500/30'
-                  : 'bg-slate-50 dark:bg-[#131B2F] border-slate-200 dark:border-[#1E293B]'
+                  ? 'bg-status-error-light border-status-error/30'
+                  : 'bg-surface-card border-border hover:bg-surface-muted'
               }`}
             >
               <div>
-                <div className="font-medium text-slate-900 dark:text-white">{student.roll_number}</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{student.name}</div>
+                <div className="font-bold text-dark">{student.roll_number}</div>
+                <div className="text-sm font-medium text-dark-60">{student.name}</div>
               </div>
               <div
-                className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                  isAbsent ? 'bg-red-500 text-slate-900 dark:text-white' : 'bg-green-500 text-slate-900 dark:text-white'
+                className={`h-10 w-10 rounded-full flex items-center justify-center text-white ${
+                  isAbsent ? 'bg-status-error' : 'bg-status-success'
                 }`}
               >
                 {isAbsent ? <X size={18} /> : <Check size={18} />}
@@ -112,8 +112,8 @@ export default function QuickMarkPage() {
         })}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0B1120]/95 backdrop-blur border-t border-slate-200 dark:border-[#1E293B] z-50">
-        <Button size="lg" className="w-full" onClick={handleDone} disabled={loading}>
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-surface-bg/95 backdrop-blur border-t border-border z-50 shadow-card">
+        <Button size="giant" variant="primary" className="w-full" onClick={handleDone} disabled={loading}>
           {loading ? 'Saving...' : 'Done'}
         </Button>
       </div>

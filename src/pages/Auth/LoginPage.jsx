@@ -43,22 +43,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden bg-[#0B1120]">
+    <div className="min-h-screen relative flex flex-col justify-center px-6 overflow-hidden bg-surface-bg">
       <div className="relative z-10 w-full max-w-sm mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">CR Attendance</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Built for Pakistani university CRs</p>
+          <h1 className="text-3xl font-bold text-dark mb-2">CR Attendance</h1>
+          <p className="text-dark-60 text-sm">Built for Pakistani university CRs</p>
         </div>
 
-        <div className="bg-[#131B2F] border border-[#1E293B] shadow-lg rounded-2xl p-6">
+        <div className="bg-surface-card border border-border shadow-card rounded-lg p-6">
           {signupSuccess ? (
             <div className="text-center py-6">
-              <div className="mx-auto w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
-                <Inbox size={32} className="text-blue-400" />
+              <div className="mx-auto w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mb-4">
+                <Inbox size={32} className="text-primary" />
               </div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Check your email</h2>
-              <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
-                We've sent a verification link to <br/><span className="text-slate-900 dark:text-white font-medium">{email}</span>. <br/>Please verify your email to continue.
+              <h2 className="text-xl font-bold text-dark mb-2">Check your email</h2>
+              <p className="text-dark-60 text-sm mb-6 leading-relaxed">
+                We've sent a verification link to <br/><span className="text-dark font-medium">{email}</span>. <br/>Please verify your email to continue.
               </p>
               <Button 
                 size="lg" 
@@ -74,12 +74,12 @@ export default function LoginPage() {
             </div>
           ) : resetSent ? (
             <div className="text-center py-6">
-              <div className="mx-auto w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
-                <Mail size={32} className="text-blue-400" />
+              <div className="mx-auto w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mb-4">
+                <Mail size={32} className="text-primary" />
               </div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Reset link sent</h2>
-              <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
-                We've sent a password reset link to <br/><span className="text-slate-900 dark:text-white font-medium">{email}</span>.
+              <h2 className="text-xl font-bold text-dark mb-2">Reset link sent</h2>
+              <p className="text-dark-60 text-sm mb-6 leading-relaxed">
+                We've sent a password reset link to <br/><span className="text-dark font-medium">{email}</span>.
               </p>
               <Button 
                 size="lg" 
@@ -98,17 +98,17 @@ export default function LoginPage() {
               {isForgotPassword && (
                 <button 
                   onClick={() => setIsForgotPassword(false)}
-                  className="flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors mb-4"
+                  className="flex items-center text-sm text-dark-60 hover:text-primary transition-fast mb-4"
                 >
                   <ArrowLeft size={16} className="mr-1" /> Back
                 </button>
               )}
               
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                <h2 className="text-xl font-bold text-dark">
                   {isForgotPassword ? 'Reset Password' : isSignUp ? 'Create Account' : 'Sign In'}
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-sm text-dark-60 mt-1">
                   {isForgotPassword 
                     ? 'Enter your email to receive a reset link' 
                     : 'Enter your credentials to continue'}
@@ -117,15 +117,15 @@ export default function LoginPage() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-1">Email</label>
+                  <label className="block text-sm font-semibold text-dark-60 mb-1.5 ml-1">Email</label>
                   <div className="relative">
-                    <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
+                    <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-dark-60" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@university.edu.pk"
-                      className="w-full h-12 pl-11 pr-4 bg-[#0B1120] border border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                      className="w-full h-12 pl-11 pr-4 bg-surface-bg border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
                       required
                     />
                   </div>
@@ -134,31 +134,31 @@ export default function LoginPage() {
                 {!isForgotPassword && (
                   <div>
                     <div className="flex items-center justify-between mb-1.5 ml-1 mr-1">
-                      <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Password</label>
+                      <label className="block text-sm font-semibold text-dark-60">Password</label>
                       {!isSignUp && (
                         <button 
                           type="button" 
                           onClick={() => setIsForgotPassword(true)}
-                          className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                          className="text-xs text-primary hover:text-primary-hover transition-fast"
                         >
                           Forgot password?
                         </button>
                       )}
                     </div>
                     <div className="relative">
-                      <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
+                      <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-dark-60" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full h-12 pl-11 pr-11 bg-[#0B1120] border border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                        className="w-full h-12 pl-11 pr-11 bg-surface-bg border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-white transition-colors p-1"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-dark-60 hover:text-primary transition-fast p-1"
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -175,7 +175,7 @@ export default function LoginPage() {
                 <div className="mt-6 text-center">
                   <button
                     onClick={() => setIsSignUp(!isSignUp)}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors"
+                    className="text-sm text-dark-60 hover:text-primary transition-fast"
                   >
                     {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
                   </button>

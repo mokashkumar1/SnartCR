@@ -156,7 +156,7 @@ export default function SummaryPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center text-slate-500 dark:text-slate-400">
+      <div className="min-h-screen bg-surface-bg flex items-center justify-center text-dark-60">
         Loading session...
       </div>
     )
@@ -174,44 +174,44 @@ export default function SummaryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-8 transition-colors duration-200 overflow-x-hidden">
+    <div className="min-h-screen bg-surface-bg pb-8 transition-colors duration-200 overflow-x-hidden">
       <PageHeader title="Attendance Summary" backTo="/" />
 
       <div className="px-4 py-6 space-y-6">
         
         {/* Responsive UI view (Not exported) */}
-        <div className="space-y-6 bg-slate-50 dark:bg-[#0B1120] p-1 -m-1">
-          <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-5 text-center shadow-sm dark:shadow-lg">
-            <h2 className="text-lg font-medium text-slate-900 dark:text-white mb-1">{subjectName}</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+        <div className="space-y-6 p-1 -m-1">
+          <div className="bg-surface-card border border-border rounded-lg p-5 text-center shadow-card">
+            <h2 className="text-xl font-bold text-dark mb-1">{subjectName}</h2>
+            <p className="text-sm font-medium text-dark-60">
               {format(new Date(session.date), 'EEEE, d MMMM yyyy')}
             </p>
             <div className="mt-4 flex items-center justify-center gap-4">
               <div className="flex flex-col items-center">
-                <div className="text-2xl font-bold text-green-500 dark:text-green-400">{presentCount}</div>
-                <div className="text-xs text-slate-500">Present</div>
+                <div className="text-2xl font-bold text-status-success">{presentCount}</div>
+                <div className="text-xs font-semibold text-dark-60 uppercase tracking-wider">Present</div>
               </div>
-              <div className="w-px h-10 bg-slate-200 dark:bg-[#1E293B]" />
+              <div className="w-px h-10 bg-border" />
               <div className="flex flex-col items-center">
-                <div className="text-2xl font-bold text-red-500 dark:text-red-400">{absentees.length}</div>
-                <div className="text-xs text-slate-500">Absent</div>
+                <div className="text-2xl font-bold text-status-error">{absentees.length}</div>
+                <div className="text-xs font-semibold text-dark-60 uppercase tracking-wider">Absent</div>
               </div>
-              <div className="w-px h-10 bg-slate-200 dark:bg-[#1E293B]" />
+              <div className="w-px h-10 bg-border" />
               <div className="flex flex-col items-center">
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                <div className="text-2xl font-bold text-dark">
                   {totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(1) : 0}%
                 </div>
-                <div className="text-xs text-slate-500">Rate</div>
+                <div className="text-xs font-semibold text-dark-60 uppercase tracking-wider">Rate</div>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-dark-60 mb-3 uppercase tracking-wider">
               Absent ({absentees.length})
             </h3>
             {absentees.length === 0 ? (
-              <div className="flex items-center gap-2 text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-xl p-4">
+              <div className="flex items-center gap-2 text-status-success bg-status-success-light border border-status-success/20 rounded-md p-4 shadow-sm">
                 <CheckCircle size={18} />
                 <span className="text-sm font-medium">All students were present!</span>
               </div>
@@ -220,13 +220,13 @@ export default function SummaryPage() {
                 {absentees.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-xl"
+                    className="flex items-center justify-between p-3 bg-status-error-light border border-status-error/20 rounded-md shadow-sm"
                   >
                     <div className="flex-1 pr-2">
-                      <div className="font-medium text-slate-900 dark:text-white mb-0.5">{s.roll_number}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400 pb-0.5">{s.name}</div>
+                      <div className="font-bold text-dark mb-0.5">{s.roll_number}</div>
+                      <div className="text-sm font-medium text-dark-60 pb-0.5">{s.name}</div>
                     </div>
-                    <XCircle size={18} className="text-red-500 dark:text-red-400 shrink-0" />
+                    <XCircle size={18} className="text-status-error shrink-0" />
                   </div>
                 ))}
               </div>
@@ -234,22 +234,22 @@ export default function SummaryPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-2xl p-4 shadow-sm dark:shadow-lg">
-          <pre className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-mono leading-relaxed mb-4 p-3 bg-slate-100 dark:bg-[#0B1120] rounded-xl overflow-x-auto">
+        <div className="bg-surface-card border border-border rounded-lg p-5 shadow-card">
+          <pre className="text-xs text-dark-60 whitespace-pre-wrap font-mono leading-relaxed mb-4 p-4 bg-surface-muted rounded-md border border-border overflow-x-auto shadow-inner">
             {reportText}
           </pre>
           
           <div className="grid grid-cols-2 gap-3 mb-3">
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportImage}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportImage}>
               <ImageIcon size={16} /> Save Image
             </Button>
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportPDF}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportPDF}>
               <FileText size={16} /> Save PDF
             </Button>
-            <Button disabled={isExporting} variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleExportCSV}>
+            <Button disabled={isExporting} variant="neutral" className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleExportCSV}>
               <FileSpreadsheet size={16} /> Save CSV
             </Button>
-            <Button className="w-full flex items-center justify-center gap-2" onClick={handleShare}>
+            <Button className="w-full flex items-center justify-center gap-2 rounded-md" onClick={handleShare}>
               {shared ? <Copy size={16} /> : <Share2 size={16} />}
               {shared ? 'Copied' : 'Copy Text'}
             </Button>

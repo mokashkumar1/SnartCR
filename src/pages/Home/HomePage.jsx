@@ -49,25 +49,25 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-200">
+    <div className="min-h-screen bg-surface-bg transition-colors duration-200 pb-24">
       {/* Top Bar */}
-      <div className="px-5 pt-8 pb-6 flex justify-between items-center bg-white dark:bg-[#0B1120] sticky top-0 z-10">
-        <button className="text-slate-800 dark:text-white p-1">
+      <div className="px-5 pt-8 pb-6 flex justify-between items-center bg-surface-bg sticky top-0 z-10">
+        <button className="text-dark p-1">
           <Menu size={24} />
         </button>
-        <button className="text-slate-800 dark:text-white p-1 relative">
+        <button className="text-dark p-1 relative">
           <Bell size={24} />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-[#0B1120]"></span>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-status-error rounded-full border border-surface-bg"></span>
         </button>
       </div>
 
       <div className="px-5">
         {/* Greeting */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-1">
+          <h1 className="text-2xl font-bold text-dark mb-1">
             Hello, {profile?.cr_name?.split(' ')[0] || 'CR'} 👋
           </h1>
-          <p className="text-[15px] font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium text-dark-60">
             {profile?.batch} {profile?.dept_code} - Section {profile?.section}
           </p>
         </div>
@@ -75,51 +75,51 @@ export default function HomePage() {
         {/* Today's Summary */}
         <div className="mb-8">
           <div className="flex justify-between items-end mb-4">
-            <h2 className="text-[17px] font-bold text-slate-900 dark:text-white">Today's Summary</h2>
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-500">{formattedDate}</span>
+            <h2 className="text-xl font-semibold text-dark">Today's Summary</h2>
+            <span className="text-xs font-medium text-dark-60">{formattedDate}</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {/* Total Students */}
-            <div className="bg-white dark:bg-[#111827] p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Total Students</p>
+            <div className="bg-surface-card p-5 rounded-lg shadow-card border border-border">
+              <p className="text-xs font-semibold text-dark-60 mb-1">Total Students</p>
               <div className="flex justify-between items-end">
-                <h3 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalStudents}</h3>
-                <div className="bg-indigo-50 dark:bg-indigo-500/10 p-1.5 rounded-lg">
-                  <Users size={18} className="text-indigo-600 dark:text-indigo-400" />
+                <h3 className="text-2xl font-bold text-primary">{totalStudents}</h3>
+                <div className="bg-primary-light p-1.5 rounded-md">
+                  <Users size={18} className="text-primary" />
                 </div>
               </div>
             </div>
 
             {/* Present */}
-            <div className="bg-white dark:bg-[#111827] p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Present</p>
+            <div className="bg-surface-card p-5 rounded-lg shadow-card border border-border">
+              <p className="text-xs font-semibold text-dark-60 mb-1">Present</p>
               <div className="flex justify-between items-end">
-                <h3 className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{present}</h3>
-                <div className="bg-emerald-50 dark:bg-emerald-500/10 p-1.5 rounded-lg">
-                  <CheckCircle2 size={18} className="text-emerald-500 dark:text-emerald-400" />
+                <h3 className="text-2xl font-bold text-status-success">{present}</h3>
+                <div className="bg-status-success-light p-1.5 rounded-md">
+                  <CheckCircle2 size={18} className="text-status-success" />
                 </div>
               </div>
             </div>
 
             {/* Absent */}
-            <div className="bg-white dark:bg-[#111827] p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Absent</p>
+            <div className="bg-surface-card p-5 rounded-lg shadow-card border border-border">
+              <p className="text-xs font-semibold text-dark-60 mb-1">Absent</p>
               <div className="flex justify-between items-end">
-                <h3 className="text-2xl font-bold text-rose-500 dark:text-rose-400">{absent}</h3>
-                <div className="bg-rose-50 dark:bg-rose-500/10 p-1.5 rounded-lg">
-                  <PhoneOff size={18} className="text-rose-500 dark:text-rose-400" />
+                <h3 className="text-2xl font-bold text-status-error">{absent}</h3>
+                <div className="bg-status-error-light p-1.5 rounded-md">
+                  <PhoneOff size={18} className="text-status-error" />
                 </div>
               </div>
             </div>
 
             {/* Attendance % */}
-            <div className="bg-white dark:bg-[#111827] p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Attendance</p>
+            <div className="bg-surface-card p-5 rounded-lg shadow-card border border-border">
+              <p className="text-xs font-semibold text-dark-60 mb-1">Attendance</p>
               <div className="flex justify-between items-end">
-                <h3 className="text-2xl font-bold text-blue-500 dark:text-blue-400">{attendancePerc}%</h3>
-                <div className="bg-blue-50 dark:bg-blue-500/10 p-1.5 rounded-lg">
-                  <TrendingUp size={18} className="text-blue-500 dark:text-blue-400" />
+                <h3 className="text-2xl font-bold text-primary">{attendancePerc}%</h3>
+                <div className="bg-primary-light p-1.5 rounded-md">
+                  <TrendingUp size={18} className="text-primary" />
                 </div>
               </div>
             </div>
@@ -129,8 +129,9 @@ export default function HomePage() {
         {/* Take Attendance Button */}
         <div className="mb-8">
           <Button 
-            size="lg" 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-slate-900 dark:text-white rounded-[20px] shadow-lg shadow-indigo-600/20 py-4 h-auto text-base font-semibold"
+            size="giant" 
+            variant="primary"
+            className="w-full"
             onClick={() => navigate('/classes')}
           >
             <Edit size={20} className="mr-2" /> Take Attendance
@@ -139,36 +140,34 @@ export default function HomePage() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-[17px] font-bold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold text-dark mb-4">Quick Actions</h2>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* View History */}
-            <Link to="/history" className="flex items-center p-4 bg-white dark:bg-[#111827] rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
-              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mr-4">
-                <Calendar size={22} className="text-slate-700 dark:text-slate-300" />
+            <Link to="/history" className="flex items-center p-5 bg-surface-card rounded-lg shadow-card border border-border active:scale-[0.98] transition-fast hover:bg-surface-muted">
+              <div className="w-12 h-12 bg-surface-muted rounded-md flex items-center justify-center mr-4">
+                <Calendar size={22} className="text-dark-60" />
               </div>
               <div className="flex-1">
-                <h3 className="text-[15px] font-bold text-slate-900 dark:text-white">View History</h3>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Check past attendance</p>
+                <h3 className="text-md font-semibold text-dark">View History</h3>
+                <p className="text-sm text-dark-60 mt-0.5">Check past attendance</p>
               </div>
-              <div className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+              <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center">
+                <ChevronRight size={16} className="text-dark-60" />
               </div>
             </Link>
 
-
-
             {/* Low Attendance */}
-            <Link to="/low-attendance" className="flex items-center p-4 bg-white dark:bg-[#111827] rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
-              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mr-4">
-                <AlertTriangle size={22} className="text-slate-700 dark:text-slate-300" />
+            <Link to="/low-attendance" className="flex items-center p-5 bg-surface-card rounded-lg shadow-card border border-border active:scale-[0.98] transition-fast hover:bg-surface-muted">
+              <div className="w-12 h-12 bg-surface-muted rounded-md flex items-center justify-center mr-4">
+                <AlertTriangle size={22} className="text-dark-60" />
               </div>
               <div className="flex-1">
-                <h3 className="text-[15px] font-bold text-slate-900 dark:text-white">Low Attendance</h3>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Students below 75%</p>
+                <h3 className="text-md font-semibold text-dark">Low Attendance</h3>
+                <p className="text-sm text-dark-60 mt-0.5">Students below 75%</p>
               </div>
-              <div className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                <ChevronRight size={16} className="text-slate-500 dark:text-slate-400" />
+              <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center">
+                <ChevronRight size={16} className="text-dark-60" />
               </div>
             </Link>
           </div>

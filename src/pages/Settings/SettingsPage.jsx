@@ -7,6 +7,7 @@ import BottomNav from '../../components/layout/BottomNav'
 import Button from '../../components/ui/Button'
 import { showToast } from '../../components/ui/Toast'
 import { LogOut, Download, Upload, Trash2, User, Save, Sun, Moon } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 export default function SettingsPage() {
   const { profile, updateProfile, signOut } = useAuthStore()
@@ -19,8 +20,6 @@ export default function SettingsPage() {
   const [deptCode, setDeptCode] = useState(profile?.dept_code || '')
   const [section, setSection] = useState(profile?.section || '')
   const [saving, setSaving] = useState(false)
-  const [importText, setImportText] = useState('')
-  const [showImport, setShowImport] = useState(false)
 
   const handleSaveProfile = async (e) => {
     e.preventDefault()
@@ -63,48 +62,129 @@ export default function SettingsPage() {
     showToast('Backup downloaded')
   }
 
-  const handleImport = () => {
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = async (event) => {
+      try {
+        const text = event.target.result
+        const data = JSON.parse(text)
+        if (!data.profile && !data.students) throw new Error('Invalid backup file')
+        
+        setSaving(true)
+        showToast('Restoring backup, please wait...')
+
+        // Execute upserts to Supabase tables
+        if (data.profile) await supabase.from('profiles').upsert(data.profile)
+        if (data.students?.length) await supabase.from('students').upsert(data.students)
+        if (data.subjects?.length) await supabase.from('subjects').upsert(data.subjects)
+        if (data.sessions?.length) await supabase.from('sessions').upsert(data.sessions)
+        if (data.records?.length) await supabase.from('attendance_records').upsert(data.records)
+
+        // Refresh all local stores to reflect restored data
+        if (data.profile?.id) await useAuthStore.getState().fetchProfile(data.profile.id)
+        await useStudentsStore.getState().fetchStudents()
+        await useAttendanceStore.getState().fetchSubjects()
+        await useAttendanceStore.getState().fetchSessions()
+        await useAttendanceStore.getState().fetchRecords()
+
+        showToast('Backup restored successfully!')
+      } catch (err) {
+        showToast(err.message || 'Restore failed', 'error')
+      } finally {
+        setSaving(false)
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = null // Reset input so same file can be selected again
+  }
+
+  const handleStartNewSemester = async () => {
+    if (!confirm('Start New Semester?\n\nThis will permanently delete all Subjects, Sessions, and Attendance records. Your Students list and Profile will be kept safe.\n\nAre you sure you want to continue?')) return
+    setSaving(true)
     try {
-      const data = JSON.parse(importText)
-      if (!data.profile && !data.students) throw new Error('Invalid backup file')
-      showToast('Import feature: validate your JSON and use Supabase dashboard for full restore.', 'error')
-      setShowImport(false)
-      setImportText('')
-    } catch {
-      showToast('Invalid JSON', 'error')
+      const user = useAuthStore.getState().user
+      const sessionIds = useAttendanceStore.getState().sessions.map(s => s.id)
+      
+      showToast('Clearing semester data...')
+      
+      if (sessionIds.length > 0) {
+        await supabase.from('attendance_records').delete().in('session_id', sessionIds)
+      }
+      await supabase.from('sessions').delete().eq('user_id', user.id)
+      await supabase.from('subjects').delete().eq('user_id', user.id)
+
+      await useAttendanceStore.getState().fetchSubjects()
+      await useAttendanceStore.getState().fetchSessions()
+      await useAttendanceStore.getState().fetchRecords()
+
+      showToast('New semester started successfully!', 'success')
+    } catch (err) {
+      showToast(err.message || 'Failed to clear data', 'error')
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleClearAll = async () => {
-    if (!confirm('WARNING: This will delete ALL your data permanently. Are you sure?')) return
-    if (!confirm('This action cannot be undone. Confirm again?')) return
-    showToast('Use Supabase dashboard to clear data securely.', 'error')
+  const handleFactoryReset = async () => {
+    if (!confirm('FACTORY RESET\n\nWARNING: This will delete absolutely EVERYTHING including your Students and Profile. This action is irreversible.\n\nAre you 100% sure?')) return
+    if (!confirm('Final warning: All data will be wiped. Continue?')) return
+    
+    setSaving(true)
+    try {
+      const user = useAuthStore.getState().user
+      const sessionIds = useAttendanceStore.getState().sessions.map(s => s.id)
+      
+      showToast('Wiping all data...')
+      
+      if (sessionIds.length > 0) {
+        await supabase.from('attendance_records').delete().in('session_id', sessionIds)
+      }
+      await supabase.from('sessions').delete().eq('user_id', user.id)
+      await supabase.from('subjects').delete().eq('user_id', user.id)
+      await supabase.from('students').delete().eq('user_id', user.id)
+      await supabase.from('profiles').delete().eq('id', user.id)
+
+      useStudentsStore.getState().clearStudents()
+      useAuthStore.setState({ profile: null })
+      await useAttendanceStore.getState().fetchSubjects()
+      await useAttendanceStore.getState().fetchSessions()
+      await useAttendanceStore.getState().fetchRecords()
+
+      showToast('All data has been wiped.', 'success')
+    } catch (err) {
+      showToast(err.message || 'Failed to wipe data', 'error')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-24 transition-colors duration-200">
-      <div className="px-5 pt-8 pb-4 sticky top-0 bg-slate-50 dark:bg-[#0B1120] z-10 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
+    <div className="min-h-screen bg-surface-bg pb-24 transition-colors duration-200">
+      <div className="px-5 pt-8 pb-4 sticky top-0 bg-surface-bg z-10 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-dark">Settings</h1>
       </div>
 
       <div className="px-5 py-2 space-y-8">
         {/* Appearance */}
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <Sun size={18} className="text-amber-500" />
-            <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Appearance</h2>
+            <Sun size={18} className="text-primary" />
+            <h2 className="text-sm font-bold text-dark-60 uppercase tracking-wider">Appearance</h2>
           </div>
-          <div className="bg-white dark:bg-[#111827] border border-slate-100 dark:border-slate-800 rounded-2xl p-4 shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none flex justify-between items-center">
+          <div className="bg-surface-card border border-border rounded-lg p-4 shadow-card flex justify-between items-center">
             <div>
-              <p className="text-[15px] font-bold text-slate-900 dark:text-white">Dark Mode</p>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Toggle app theme</p>
+              <p className="text-[15px] font-bold text-dark">Dark Mode</p>
+              <p className="text-xs font-medium text-dark-60 mt-0.5">Toggle app theme</p>
             </div>
             <button 
               onClick={toggleTheme}
-              className="w-14 h-8 bg-slate-100 dark:bg-slate-800 rounded-full relative transition-colors duration-300 border border-slate-200 dark:border-slate-700"
+              className="w-14 h-8 bg-surface-muted rounded-full relative transition-colors duration-300 border border-border"
             >
-              <div className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center ${theme === 'dark' ? 'translate-x-6 bg-indigo-600' : 'bg-white shadow-sm'}`}>
-                {theme === 'dark' ? <Moon size={14} className="text-slate-900 dark:text-white" /> : <Sun size={14} className="text-amber-500" />}
+              <div className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center ${theme === 'dark' ? 'translate-x-6 bg-primary' : 'bg-white shadow-sm'}`}>
+                {theme === 'dark' ? <Moon size={14} className="text-white" /> : <Sun size={14} className="text-primary" />}
               </div>
             </button>
           </div>
@@ -113,8 +193,8 @@ export default function SettingsPage() {
         {/* Profile */}
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <User size={18} className="text-indigo-500" />
-            <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">CR Profile</h2>
+            <User size={18} className="text-primary" />
+            <h2 className="text-sm font-bold text-dark-60 uppercase tracking-wider">CR Profile</h2>
           </div>
           <form onSubmit={handleSaveProfile} className="space-y-3">
             <input
@@ -122,7 +202,7 @@ export default function SettingsPage() {
               value={crName}
               onChange={(e) => setCrName(e.target.value)}
               placeholder="Your Name"
-              className="w-full h-12 px-4 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm"
+              className="w-full h-12 px-4 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
             />
             <div className="grid grid-cols-3 gap-2">
               <input
@@ -130,24 +210,24 @@ export default function SettingsPage() {
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
                 placeholder="Batch"
-                className="w-full h-12 px-3 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm"
+                className="w-full h-12 px-3 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
               />
               <input
                 type="text"
                 value={deptCode}
                 onChange={(e) => setDeptCode(e.target.value)}
                 placeholder="Dept"
-                className="w-full h-12 px-3 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm"
+                className="w-full h-12 px-3 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
               />
               <input
                 type="text"
                 value={section}
                 onChange={(e) => setSection(e.target.value)}
                 placeholder="Section"
-                className="w-full h-12 px-3 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm"
+                className="w-full h-12 px-3 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
               />
             </div>
-            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-slate-900 dark:text-white rounded-xl shadow-sm" disabled={saving}>
+            <Button type="submit" variant="primary" className="w-full rounded-md shadow-sm" disabled={saving}>
               <Save size={16} className="mr-2" /> {saving ? 'Saving...' : 'Save Profile'}
             </Button>
           </form>
@@ -156,35 +236,31 @@ export default function SettingsPage() {
         {/* Data */}
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <Download size={18} className="text-emerald-500" />
-            <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Data</h2>
+            <Download size={18} className="text-primary" />
+            <h2 className="text-sm font-bold text-dark-60 uppercase tracking-wider">Data</h2>
           </div>
           <div className="space-y-3">
-            <Button variant="outline" className="w-full justify-start rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-300 shadow-sm" onClick={handleExport}>
+            <Button variant="neutral" className="w-full justify-start rounded-md shadow-sm" onClick={handleExport}>
               <Download size={16} className="mr-3" /> Export Backup (JSON)
             </Button>
 
-            {showImport ? (
-              <div className="space-y-3 bg-white dark:bg-[#111827] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none">
-                <textarea
-                  value={importText}
-                  onChange={(e) => setImportText(e.target.value)}
-                  placeholder="Paste backup JSON here..."
-                  className="w-full h-32 p-3 bg-slate-50 dark:bg-[#0B1120] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 text-xs font-mono"
-                />
-                <div className="flex gap-2">
-                  <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-slate-900 dark:text-white rounded-xl" onClick={handleImport}>Import</Button>
-                  <Button variant="outline" className="rounded-xl border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300" onClick={() => setShowImport(false)}>Cancel</Button>
-                </div>
-              </div>
-            ) : (
-              <Button variant="outline" className="w-full justify-start rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-300 shadow-sm" onClick={() => setShowImport(true)}>
-                <Upload size={16} className="mr-3" /> Import Backup (JSON)
-              </Button>
-            )}
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              id="json-upload"
+              onChange={handleFileUpload}
+            />
+            <Button variant="neutral" className="w-full justify-start rounded-md shadow-sm" onClick={() => document.getElementById('json-upload').click()}>
+              <Upload size={16} className="mr-3" /> Import Backup (JSON)
+            </Button>
 
-            <Button variant="danger" className="w-full justify-start rounded-xl shadow-sm" onClick={handleClearAll}>
-              <Trash2 size={16} className="mr-3" /> Clear All Data
+            <Button variant="danger" className="w-full justify-start rounded-md shadow-sm" onClick={handleStartNewSemester}>
+              <Trash2 size={16} className="mr-3" /> Start New Semester
+            </Button>
+
+            <Button variant="danger" className="w-full justify-start rounded-md shadow-sm opacity-80" onClick={handleFactoryReset}>
+              <Trash2 size={16} className="mr-3" /> Factory Reset (Wipe All)
             </Button>
           </div>
         </section>
@@ -192,10 +268,10 @@ export default function SettingsPage() {
         {/* Auth */}
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <LogOut size={18} className="text-rose-500" />
-            <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Account</h2>
+            <LogOut size={18} className="text-status-error" />
+            <h2 className="text-sm font-bold text-dark-60 uppercase tracking-wider">Account</h2>
           </div>
-          <Button variant="outline" className="w-full justify-start text-rose-500 border-rose-200 dark:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl bg-white dark:bg-[#111827] shadow-sm" onClick={signOut}>
+          <Button variant="neutral" className="w-full justify-start rounded-md shadow-sm text-status-error hover:text-status-error" onClick={signOut}>
             <LogOut size={16} className="mr-3" /> Sign Out
           </Button>
         </section>

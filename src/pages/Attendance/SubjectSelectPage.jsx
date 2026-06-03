@@ -75,13 +75,13 @@ export default function SubjectSelectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] pb-20 transition-colors duration-200">
-      <div className="px-5 pt-8 pb-4 flex justify-between items-center sticky top-0 bg-slate-50 dark:bg-[#0B1120] z-10">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Classes</h1>
+    <div className="min-h-screen bg-surface-bg pb-20 transition-colors duration-200">
+      <div className="px-5 pt-8 pb-4 flex justify-between items-center sticky top-0 bg-surface-bg z-10">
+        <h1 className="text-2xl font-bold text-dark">Classes</h1>
         {!showAdd && (
           <button 
             onClick={() => setShowAdd(true)}
-            className="text-[15px] font-semibold text-indigo-600 dark:text-indigo-400 flex items-center bg-indigo-50 dark:bg-indigo-500/10 px-3 py-1.5 rounded-lg"
+            className="text-[15px] font-semibold text-primary flex items-center bg-primary-light px-3 py-1.5 rounded-md hover:bg-border transition-fast"
           >
             <Plus size={18} className="mr-1" /> Add
           </button>
@@ -89,17 +89,17 @@ export default function SubjectSelectPage() {
       </div>
 
       {showResume && currentSession && (
-        <div className="mx-5 mb-6 p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none">
+        <div className="mx-5 mb-6 p-4 bg-status-warning-light border border-status-warning/20 rounded-lg shadow-card">
           <div className="flex items-start gap-3">
-            <RotateCcw size={18} className="text-amber-600 dark:text-amber-500 mt-0.5 shrink-0" />
+            <RotateCcw size={18} className="text-status-warning mt-0.5 shrink-0" />
             <div className="flex-1">
-              <p className="text-sm text-amber-800 dark:text-amber-400 font-bold">Resume session?</p>
-              <p className="text-xs text-amber-700 dark:text-amber-400/80 mt-1">
+              <p className="text-sm text-status-warning font-bold">Resume session?</p>
+              <p className="text-xs text-status-warning/80 mt-1">
                 You have an unfinished attendance session.
               </p>
               <div className="flex gap-2 mt-3">
-                <Button size="sm" className="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 dark:text-white rounded-xl" onClick={handleResume}>Resume</Button>
-                <Button size="sm" variant="outline" className="text-amber-700 border-amber-300 dark:text-amber-400 dark:border-amber-500/30 rounded-xl" onClick={handleDiscard}>Discard</Button>
+                <Button size="sm" className="flex-1 bg-status-warning hover:bg-status-warning/90 text-white border-none" onClick={handleResume}>Resume</Button>
+                <Button size="sm" variant="ghost" className="text-status-warning hover:bg-status-warning/20 border-none" onClick={handleDiscard}>Discard</Button>
               </div>
             </div>
           </div>
@@ -107,9 +107,9 @@ export default function SubjectSelectPage() {
       )}
 
       {students.length === 0 && (
-        <div className="mx-5 mb-6 p-4 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-2xl flex items-start gap-3">
-          <AlertCircle size={18} className="text-rose-500 mt-0.5 shrink-0" />
-          <p className="text-sm text-rose-700 dark:text-rose-400 font-medium">You have no students. Add them before taking attendance.</p>
+        <div className="mx-5 mb-6 p-4 bg-status-error-light border border-status-error/20 rounded-lg flex items-start gap-3 shadow-card">
+          <AlertCircle size={18} className="text-status-error mt-0.5 shrink-0" />
+          <p className="text-sm text-status-error font-medium">You have no students. Add them before taking attendance.</p>
         </div>
       )}
 
@@ -120,11 +120,11 @@ export default function SubjectSelectPage() {
             value={newSubject}
             onChange={(e) => setNewSubject(e.target.value)}
             placeholder="Class Name (e.g. Data Structures)"
-            className="w-full h-12 px-4 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 mb-3 shadow-sm transition-all"
+            className="w-full h-9 px-3 bg-surface-card border border-border rounded-md text-md text-dark placeholder:text-dark-30 focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] focus:outline-none transition-fast mb-3 shadow-sm"
           />
           <div className="flex gap-2">
-            <Button type="submit" disabled={loading} className="flex-1 bg-indigo-600 hover:bg-indigo-700 rounded-xl">Save</Button>
-            <Button type="button" variant="outline" onClick={() => setShowAdd(false)} className="flex-1 rounded-xl border-slate-200 dark:border-slate-700">Cancel</Button>
+            <Button type="submit" disabled={loading} className="flex-1 rounded-md">Save</Button>
+            <Button type="button" variant="neutral" onClick={() => setShowAdd(false)} className="flex-1 rounded-md">Cancel</Button>
           </div>
         </form>
       )}
@@ -134,30 +134,31 @@ export default function SubjectSelectPage() {
           <EmptyState title="No classes yet" subtitle="Add your first class to start taking attendance." />
         ) : (
           subjects.map((subj) => (
-            <div key={subj.id} className="bg-white dark:bg-[#111827] border border-slate-100 dark:border-slate-800 rounded-[20px] overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.03)] dark:shadow-none">
-              <div className="p-4 flex items-center justify-between border-b border-slate-50 dark:border-slate-800/50">
+            <div key={subj.id} className="bg-surface-card border border-border rounded-lg overflow-hidden shadow-card">
+              <div className="p-5 flex items-center justify-between border-b border-border">
                 <div className="flex items-center gap-3">
-                  <div className="bg-indigo-50 dark:bg-indigo-500/10 p-2.5 rounded-xl">
-                    <BookOpen size={22} className="text-indigo-600 dark:text-indigo-400" />
+                  <div className="bg-primary-light p-2.5 rounded-md">
+                    <BookOpen size={22} className="text-primary" />
                   </div>
                   <div>
-                    <span className="text-[17px] font-bold text-slate-900 dark:text-white block">{subj.name}</span>
-                    <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 block mt-0.5">{profile?.batch} - {profile?.section}</span>
+                    <span className="text-lg font-bold text-dark block">{subj.name}</span>
+                    <span className="text-sm font-medium text-dark-60 block mt-0.5">{profile?.batch} - {profile?.section}</span>
                   </div>
                 </div>
               </div>
-              <div className="px-4 py-3 bg-slate-50/50 dark:bg-slate-800/20 flex gap-2">
+              <div className="px-5 py-3 bg-surface-muted flex gap-3">
                 <Button
-                  size="sm"
-                  className="flex-1 text-[13px] font-semibold h-10 bg-indigo-600 hover:bg-indigo-700 text-slate-900 dark:text-white rounded-xl shadow-sm shadow-indigo-500/20"
+                  size="md"
+                  variant="primary"
+                  className="flex-1"
                   onClick={() => handleSelectSubject(subj.id, 'take')}
                 >
                   Take Attendance
                 </Button>
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 text-[13px] font-semibold h-10 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-300 shadow-sm"
+                  size="md"
+                  variant="neutral"
+                  className="flex-1"
                   onClick={() => handleSelectSubject(subj.id, 'quick')}
                 >
                   <Zap size={16} className="mr-1.5" /> Quick Mark

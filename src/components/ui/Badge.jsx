@@ -1,14 +1,14 @@
-export default function Badge({ children, variant = 'default' }) {
+export default function Badge({ children, variant = 'default', className = '' }) {
   const variants = {
-    default: 'bg-slate-100 dark:bg-[#1E293B] text-slate-600 dark:text-slate-300',
-    success: 'bg-green-500/20 text-green-400',
-    danger: 'bg-red-500/20 text-red-400',
-    warning: 'bg-amber-500/20 text-amber-400',
-    info: 'bg-blue-500/20 text-blue-400',
+    default: 'bg-surface-muted text-dark-60',
+    success: 'bg-status-success-light text-status-success',
+    danger: 'bg-status-error-light text-status-error',
+    warning: 'bg-status-warning-light text-status-warning',
+    info: 'bg-surface-muted text-dark-60', // No info in specs, fallback to neutral
   }
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${variants[variant]}`}>
+    <span className={`inline-flex items-center px-3 py-[3px] rounded-full text-xs font-semibold tracking-[0.02em] ${variants[variant] || variants.default} ${className}`}>
       {children}
     </span>
   )

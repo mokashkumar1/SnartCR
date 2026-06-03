@@ -2,13 +2,13 @@ export default function ProgressBar({ current, total }) {
   const pct = total > 0 ? Math.round((current / total) * 100) : 0
   return (
     <div className="w-full">
-      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+      <div className="flex justify-between text-xs text-dark-60 font-semibold mb-1">
         <span>{current}/{total}</span>
         <span>{pct}%</span>
       </div>
-      <div className="w-full h-2 bg-slate-100 dark:bg-[#1E293B] rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-border rounded-full overflow-hidden">
         <div
-          className="h-full bg-blue-500 rounded-full transition-all duration-300"
+          className="h-full bg-primary rounded-full transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>

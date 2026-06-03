@@ -155,20 +155,19 @@ export default function TakingPage() {
 
   if (!initDone) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex items-center justify-center">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+      <div className="min-h-screen bg-surface-bg flex items-center justify-center">
+        <div className="text-dark-60">Loading...</div>
       </div>
     )
   }
 
   if (!currentStudent) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex flex-col items-center justify-center px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-navy-950 to-navy-950" />
-        <div className="text-center relative z-10 glass-panel p-8 rounded-3xl">
+      <div className="min-h-screen bg-surface-bg flex flex-col items-center justify-center px-6 relative overflow-hidden">
+        <div className="text-center relative z-10 bg-surface-card border border-border shadow-card p-8 rounded-xl">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }} className="text-6xl mb-4">🎉</motion.div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">All Done!</h2>
-          <p className="text-blue-200 mb-8">{markedCount}/{students.length} students marked</p>
+          <h2 className="text-2xl font-bold text-dark mb-2">All Done!</h2>
+          <p className="text-dark-60 mb-8">{markedCount}/{students.length} students marked</p>
           <Button size="lg" className="w-full max-w-xs" onClick={finishSession} disabled={loading}>
             {loading ? 'Saving...' : 'Finish & View Report'}
           </Button>
@@ -178,10 +177,10 @@ export default function TakingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-surface-bg flex flex-col relative overflow-hidden">
       {/* Dynamic Background Overlays */}
-      <motion.div style={{ opacity: bgPresentOpacity }} className="absolute inset-0 bg-green-500 pointer-events-none" />
-      <motion.div style={{ opacity: bgAbsentOpacity }} className="absolute inset-0 bg-red-500 pointer-events-none" />
+      <motion.div style={{ opacity: bgPresentOpacity }} className="absolute inset-0 bg-status-success pointer-events-none" />
+      <motion.div style={{ opacity: bgAbsentOpacity }} className="absolute inset-0 bg-status-error pointer-events-none" />
       
       <PageHeader title="Taking Attendance" backTo="/" />
 
@@ -196,12 +195,12 @@ export default function TakingPage() {
             onDragEnd={handleDragEnd}
             style={{ x, rotate, opacity }}
             animate={controls}
-            className="mt-12 mb-12 text-center glass-panel p-8 rounded-3xl cursor-grab active:cursor-grabbing touch-none"
+            className="mt-12 mb-12 text-center bg-surface-card border border-border shadow-card p-8 rounded-xl cursor-grab active:cursor-grabbing touch-none"
           >
-            <div className="text-6xl font-bold tracking-wider text-slate-900 dark:text-white mb-3 drop-shadow-lg">
+            <div className="text-[32px] font-bold tracking-wider text-dark mb-3 drop-shadow-sm">
               {currentStudent.roll_number}
             </div>
-            <div className="text-xl text-blue-200 font-medium">
+            <div className="text-xl text-dark-60 font-semibold">
               {currentStudent.name}
             </div>
           </motion.div>
@@ -229,7 +228,7 @@ export default function TakingPage() {
             {index > 0 && (
               <button
                 onClick={goBack}
-                className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5"
+                className="flex items-center gap-2 text-sm text-dark-60 hover:text-dark transition-colors py-2 px-4 rounded-full hover:bg-surface-muted"
               >
                 <Undo size={16} /> Back to previous
               </button>
@@ -238,7 +237,7 @@ export default function TakingPage() {
         </div>
       </div>
 
-      <div className="px-4 pb-8 text-center text-xs text-slate-500 relative z-10 uppercase tracking-widest font-semibold">
+      <div className="px-4 pb-8 text-center text-xs text-dark-60 relative z-10 uppercase tracking-widest font-bold">
         Swipe Right = Present · Swipe Left = Absent
       </div>
     </div>

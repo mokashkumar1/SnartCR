@@ -37,10 +37,10 @@ export default function SetupPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] flex flex-col justify-center px-6">
+    <div className="min-h-screen bg-surface-bg flex flex-col justify-center px-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Complete Your Profile</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">This info will appear on attendance reports.</p>
+        <h1 className="text-2xl font-bold text-dark mb-2">Complete Your Profile</h1>
+        <p className="text-dark-60 text-sm">This info will appear on attendance reports.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,15 +48,15 @@ export default function SetupPage() {
           const Icon = f.icon
           return (
             <div key={f.label}>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">{f.label}</label>
+              <label className="block text-sm font-semibold text-dark-60 mb-1.5">{f.label}</label>
               <div className="relative">
-                <Icon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Icon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-60" />
                 <input
                   type="text"
                   value={f.value}
                   onChange={(e) => f.setter(e.target.value)}
                   placeholder={f.placeholder}
-                  className="w-full h-12 pl-10 pr-4 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 uppercase"
+                  className="w-full h-12 pl-10 pr-4 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm uppercase"
                   required
                 />
               </div>

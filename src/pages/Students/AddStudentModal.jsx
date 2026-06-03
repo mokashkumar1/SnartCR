@@ -40,42 +40,52 @@ export default function AddStudentModal({ student, onClose, onSaved }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-      <div className="w-full sm:max-w-md bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-slate-900 dark:text-white">{student ? 'Edit Student' : 'Add Student'}</h2>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-navy-700 text-slate-500 dark:text-slate-400">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-dark-60 backdrop-blur-[2px] p-0 sm:p-4">
+      <div className="w-full sm:max-w-[560px] bg-surface-card border border-border rounded-t-xl sm:rounded-xl shadow-modal flex flex-col">
+        
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+          <h2 className="text-lg font-bold text-dark">{student ? 'Edit Student' : 'Add Student'}</h2>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-surface-muted text-dark-60 hover:text-dark transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-slate-600 dark:text-slate-300 mb-1">Roll Number</label>
-            <input
-              type="text"
-              value={roll}
-              onChange={(e) => setRoll(e.target.value)}
-              placeholder="24CS030"
-              className="w-full h-12 px-4 bg-white dark:bg-[#0B1120] border border-slate-200 dark:border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-slate-600 dark:text-slate-300 mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Full name"
-              className="w-full h-12 px-4 bg-white dark:bg-[#0B1120] border border-slate-200 dark:border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+        <div className="px-6 py-5">
+          <form id="studentForm" onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-dark mb-1">Roll Number</label>
+              <input
+                type="text"
+                value={roll}
+                onChange={(e) => setRoll(e.target.value)}
+                placeholder="24CS030"
+                className="w-full h-9 px-3 bg-surface-card border border-border rounded-md text-md text-dark placeholder:text-dark-30 focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] focus:outline-none transition-fast"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark mb-1">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full name"
+                className="w-full h-9 px-3 bg-surface-card border border-border rounded-md text-md text-dark placeholder:text-dark-30 focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] focus:outline-none transition-fast"
+                required
+              />
+            </div>
+          </form>
+        </div>
+
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" form="studentForm" disabled={loading}>
             {loading ? 'Saving...' : student ? 'Update' : 'Add Student'}
           </Button>
-        </form>
+        </div>
+
       </div>
     </div>
   )

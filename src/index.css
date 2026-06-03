@@ -1,3 +1,5 @@
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +9,9 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-[#0B1120] dark:text-white min-h-screen relative transition-colors duration-200;
+    background-color: var(--color-surface-bg);
+    color: var(--color-dark);
+    font-family: var(--font-family);
     overscroll-behavior-y: none;
   }
   #root {
@@ -17,7 +21,7 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-white border border-slate-200 shadow-sm dark:bg-[#131B2F] dark:border-[#1E293B] dark:shadow-lg;
+    @apply bg-surface-card border border-border shadow-card;
   }
 }
 
@@ -33,5 +37,5 @@
 
 /* Toast customizations */
 [data-sonner-toast] {
-  @apply bg-navy-800 text-white border-navy-700 !important;
+  @apply bg-surface-card text-dark border-border shadow-card !important;
 }

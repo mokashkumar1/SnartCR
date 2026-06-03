@@ -39,26 +39,26 @@ export default function StudentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] pb-24">
+    <div className="min-h-screen bg-surface-bg pb-24">
       <PageHeader title="Students" showBack={false} />
 
       <div className="px-4 py-3 space-y-3">
         <div className="relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-60" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by roll or name..."
-            className="w-full h-11 pl-10 pr-4 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full h-10 pl-10 pr-4 bg-surface-card border border-border rounded-md text-dark placeholder:text-dark-30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-border-focus)] transition-fast shadow-sm"
           />
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={() => setShowAdd(true)}>
+          <Button variant="neutral" className="flex-1 rounded-md" onClick={() => setShowAdd(true)}>
             <Plus size={16} className="mr-2" /> Add
           </Button>
-          <Button variant="outline" className="flex-1" onClick={() => setShowBulk(true)}>
+          <Button variant="neutral" className="flex-1 rounded-md" onClick={() => setShowBulk(true)}>
             <Upload size={16} className="mr-2" /> Import CSV
           </Button>
         </div>
@@ -71,22 +71,22 @@ export default function StudentsPage() {
           filtered.map((student) => (
             <div
               key={student.id}
-              className="flex items-center justify-between p-3 bg-slate-50 dark:bg-[#131B2F] border border-slate-200 dark:border-[#1E293B] rounded-xl"
+              className="flex items-center justify-between p-4 bg-surface-card border border-border rounded-lg shadow-sm"
             >
               <div>
-                <div className="font-medium text-slate-900 dark:text-white">{student.roll_number}</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{student.name}</div>
+                <div className="font-bold text-dark">{student.roll_number}</div>
+                <div className="text-sm font-medium text-dark-60 mt-0.5">{student.name}</div>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setEditing(student)}
-                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-400 hover:bg-navy-700 transition-colors"
+                  className="p-2 rounded-md text-dark-60 hover:text-primary hover:bg-surface-muted transition-fast"
                 >
                   <Pencil size={16} />
                 </button>
                 <button
                   onClick={() => handleDelete(student.id)}
-                  className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-400 hover:bg-navy-700 transition-colors"
+                  className="p-2 rounded-md text-dark-60 hover:text-status-error hover:bg-surface-muted transition-fast"
                 >
                   <Trash2 size={16} />
                 </button>
