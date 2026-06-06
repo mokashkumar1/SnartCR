@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useStudentsStore } from '../../store/studentsStore'
 import { useAttendanceStore } from '../../store/attendanceStore'
-import { Menu, Bell, Users, CheckCircle2, PhoneOff, TrendingUp, Calendar, FileText, AlertTriangle, Edit, ChevronRight } from 'lucide-react'
+import { Settings, Users, CheckCircle2, PhoneOff, TrendingUp, Calendar, FileText, AlertTriangle, Edit, ChevronRight } from 'lucide-react'
 import BottomNav from '../../components/layout/BottomNav'
 import Button from '../../components/ui/Button'
 
@@ -51,13 +51,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-surface-bg transition-colors duration-200 pb-24">
       {/* Top Bar */}
-      <div className="px-5 pt-8 pb-6 flex justify-between items-center bg-surface-bg sticky top-0 z-10">
-        <button className="text-dark p-1">
-          <Menu size={24} />
-        </button>
-        <button className="text-dark p-1 relative">
-          <Bell size={24} />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-status-error rounded-full border border-surface-bg"></span>
+      <div className="px-5 pt-8 pb-6 flex justify-end items-center bg-surface-bg sticky top-0 z-10">
+        <button 
+          className="text-dark p-2 -mr-2 transition-fast active:scale-95 hover:bg-surface-muted rounded-full"
+          onClick={() => navigate('/settings')}
+          aria-label="Settings"
+        >
+          <Settings size={24} />
         </button>
       </div>
 

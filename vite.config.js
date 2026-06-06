@@ -7,19 +7,19 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['pwa-icon.svg'],
+      includeAssets: ['smartcrlogo.png'],
       manifest: {
-        name: 'SmartCR Attendance',
-        short_name: 'SmartCR',
-        description: 'SmartCR Attendance Management App for Class Representatives',
+        name: 'Smart CR',
+        short_name: 'Smart CR',
+        description: 'Smart CR Attendance Management App for Class Representatives',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [
           {
-            src: 'pwa-icon.svg',
+            src: 'smartcrlogo.png',
             sizes: '192x192 512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any maskable'
           }
         ]

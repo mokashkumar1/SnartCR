@@ -6,7 +6,6 @@ const tabs = [
   { to: '/classes', icon: BookOpen, label: 'Classes' },
   { to: '/students', icon: Users, label: 'Students' },
   { to: '/history', icon: FileText, label: 'Reports' },
-  { to: '/settings', icon: MoreHorizontal, label: 'More' },
 ]
 
 export default function BottomNav() {
