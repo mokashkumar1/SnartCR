@@ -49,6 +49,14 @@ export default function QuickMarkPage() {
     }))
   }
 
+  const markAll = (status) => {
+    setStatusMap(() => {
+      const newMap = {}
+      students.forEach((s) => { newMap[s.id] = status })
+      return newMap
+    })
+  }
+
   const absentCount = Object.values(statusMap).filter((v) => v === 'absent').length
   const presentCount = students.length - absentCount
 
@@ -74,12 +82,23 @@ export default function QuickMarkPage() {
 
       <div className="px-4 py-3 flex items-center justify-between bg-surface-card border-b border-border shadow-sm">
         <div className="text-sm text-dark-60">
-          Present: <span className="text-status-success font-medium">{presentCount}</span> · Absent:{' '}
-          <span className="text-status-error font-medium">{absentCount}</span>
+          <span className="text-status-success font-medium">{presentCount}</span> P ·{' '}
+          <span className="text-status-error font-medium">{absentCount}</span> A
         </div>
-        <Badge variant={absentCount > 0 ? 'warning' : 'success'}>
-          {absentCount > 0 ? `${absentCount} absent` : 'All present'}
-        </Badge>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => markAll('present')}
+            className="text-xs px-3 py-1.5 bg-status-success-light text-status-success font-semibold rounded-full active:scale-95 transition-all shadow-sm border border-status-success/20 hover:bg-status-success/20"
+          >
+            All P
+          </button>
+          <button 
+            onClick={() => markAll('absent')}
+            className="text-xs px-3 py-1.5 bg-status-error-light text-status-error font-semibold rounded-full active:scale-95 transition-all shadow-sm border border-status-error/20 hover:bg-status-error/20"
+          >
+            All A
+          </button>
+        </div>
       </div>
 
       <div className="px-4 mt-2 space-y-2">
